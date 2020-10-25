@@ -1,17 +1,28 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- <div class="grey-back" /> -->
+    <Header :title="title"/>
+    <div class="white-back">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Header from '../src/components/Header'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Header,
+  },
+  data () {
+    return {
+      title: ''
+    }
+  },
+  mounted() {
+    this.title = this.$route.meta.title
   }
 }
 </script>
@@ -22,7 +33,26 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  width: 100vw;
+  height: 100vh;
 }
+.grey-back {
+  background-color: transparent;
+  height: 10%;
+}
+.white-back {
+  height: 88%;
+  background-color: rgb(255, 255, 255);;
+  margin: 0 21px;
+  border-top-right-radius: 61px;
+  border-top-left-radius: 61px;
+  box-shadow: 0 3px 6px rgb(0, 0, 0, 0.16);
+  overflow: scroll;
+}
+
+body {
+  background: rgb(246, 246, 246);
+}
+
+body { margin: 0 !important; }
 </style>
