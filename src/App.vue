@@ -1,28 +1,39 @@
 <template>
   <div id="app">
     <!-- <div class="grey-back" /> -->
-    <Header :title="title"/>
+    <Header :title="title" @openNav="openAndCloseNav" />
     <div class="white-back">
-      <router-view></router-view>
+      <router-view @setTitle="setTitle" ></router-view>
     </div>
+    <transition name="slide-fade">
+      <nav-page v-if="isOpen" @closeNav="openAndCloseNav" />
+    </transition>
   </div>
 </template>
 
 <script>
 import Header from '../src/components/Header'
+import NavPage from '../src/components/NavPage'
 
 export default {
   name: 'App',
   components: {
     Header,
+    NavPage
   },
   data () {
     return {
-      title: ''
+      title: '',
+      isOpen: false
     }
   },
-  mounted() {
-    this.title = this.$route.meta.title
+  methods: {
+    openAndCloseNav() {
+      this.isOpen = !this.isOpen
+    },
+    setTitle() {
+      this.title = this.$route.meta.title
+    }
   }
 }
 </script>
@@ -55,4 +66,18 @@ body {
 }
 
 body { margin: 0 !important; }
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+  opacity: 30%;
+}
+.slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+
 </style>

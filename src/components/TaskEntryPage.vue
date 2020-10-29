@@ -6,7 +6,10 @@
 
 <script>
 export default {
-  name: "TaskEntryPage"
+  name: "TaskEntryPage",
+  mounted() {
+    this.$emit("setTitle")
+  }
 }
 </script>
 

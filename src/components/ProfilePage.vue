@@ -12,6 +12,9 @@ export default {
   data() {
     return {
     }
+  },
+  mounted() {
+    this.$emit("setTitle")
   }
 }
 </script>

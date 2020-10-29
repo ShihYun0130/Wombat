@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <img :src="menuIcon" class="menu-icon" />
+    <img :src="menuIcon" class="menu-icon" @click="openNav" />
     <div class="title">{{ title }}</div>
     <div class="fake-top-right"></div>
   </div>
@@ -17,6 +17,11 @@ export default {
   data() {
     return {
       menuIcon
+    }
+  },
+  methods: {
+    openNav() {
+      this.$emit("openNav")
     }
   }
 }
@@ -35,7 +40,6 @@ export default {
 .title {
   font-size: 30px;
   font-weight: bold;
-  /* line-height: 40px;x */
   color: rgb(51, 51, 51);
 }
 

@@ -6,40 +6,44 @@ import PageNotFound from './components/PageNotFound'
 
 const routes = [
   { path: '/', redirect: '/Profile' },
-  { 
-    path: '/Profile', 
-    component: ProfilePage, 
+  {
+    name: "profile",
+    path: '/Profile',
+    component: ProfilePage,
     meta: {
       title: '個人資訊'
     }
   },
-  { 
-    path: '/Tasks', 
+  {
+    name: "tasks",
+    path: '/Tasks',
     component: TaskEntryPage,
     meta: {
       title: '任務看板'
-    } 
+    }
   },
-  { 
-    path: '/Task-info', 
+  {
+    name: "taskInfo",
+    path: '/Task-info',
     component: TaskInfoPage,
     meta: {
       title: '任務詳細說明'
-    }  
+    }
   },
-  { 
-    path: '/Label-result', 
+  {
+    name: "labelResult",
+    path: '/Label-result',
     component: LabelResultPage,
     meta: {
-      title: '完成'
-    }  
+      title: '任務完成'
+    }
   },
-  { 
-    path: '*', 
+  {
+    path: '*',
     component: PageNotFound,
     meta: {
       title: '個人資訊'
-    }  
+    }
   }
 ];
 
