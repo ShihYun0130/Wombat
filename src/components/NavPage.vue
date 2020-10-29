@@ -49,7 +49,7 @@ export default {
   top: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   opacity: 95%;
   z-index: 9;
@@ -65,7 +65,7 @@ export default {
 }
 
 .navs {
-  margin-bottom: 50px;
+  margin-top: 100px;
 }
 @keyframes fade-in { 
   from { 
@@ -79,5 +79,7 @@ export default {
   margin: 30px;
   font-size: 20px;
   color: rgb(51, 51, 51);
+  border-bottom: 1px solid rgb(201, 201, 201);
+  padding-bottom: 10px;
 }
 </style>

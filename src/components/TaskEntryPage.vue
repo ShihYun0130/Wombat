@@ -8,7 +8,8 @@
 export default {
   name: "TaskEntryPage",
   mounted() {
-    this.$emit("setTitle")
+    const title = this.$route.meta.title
+    this.$emit("setTitle", title)
   }
 }
 </script>
