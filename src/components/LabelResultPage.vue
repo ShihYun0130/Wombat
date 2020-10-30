@@ -1,15 +1,26 @@
 <template>
   <div id="labelResultPage">
-    Label Result Page
+    
+
   </div>
 </template>
 
 <script>
+
 export default {
-  name: "LabelResultPage"
+  name: "LabelResultPage",
+  components: {
+  },
+  data() {
+    return {
+      value: 90
+    }
+  }
 }
 </script>
 
 <style>
-
+.v-app-bar--fixed {
+  display: none;
+}
 </style>
