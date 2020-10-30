@@ -1,28 +1,47 @@
 <template>
   <div id="app">
     <!-- <div class="grey-back" /> -->
-    <Header :title="title"/>
-    <div class="white-back">
-      <router-view></router-view>
+    <div v-if="this.title === ''" class="profile-img">
+      <img :src="profileImgPath" />
     </div>
+
+    <Header :title="title" @openNav="openAndCloseNav" />
+    <div class="white-back">
+      <router-view @setTitle="setTitle" @setProfilePic="setProfileImgPath" ></router-view>
+    </div>
+    <transition name="slide-fade">
+      <nav-page v-if="isOpen" @closeNav="openAndCloseNav" />
+    </transition>
   </div>
 </template>
 
 <script>
 import Header from '../src/components/Header'
+import NavPage from '../src/components/NavPage'
 
 export default {
   name: 'App',
   components: {
     Header,
+    NavPage
   },
   data () {
     return {
-      title: ''
+      title: '',
+      isOpen: false,
+      profileImgPath: ''
     }
   },
-  mounted() {
-    this.title = this.$route.meta.title
+  methods: {
+    openAndCloseNav() {
+      this.isOpen = !this.isOpen
+    },
+    setTitle(title) {
+      this.title = title
+    },
+    setProfileImgPath(imgPath) {
+      this.profileImgPath = imgPath
+    }
   }
 }
 </script>
@@ -51,8 +70,43 @@ export default {
 }
 
 body {
-  background: rgb(246, 246, 246);
+  background: rgb(246, 246, 246)!important;
 }
 
 body { margin: 0 !important; }
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+  opacity: 30%;
+}
+.slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.profile-img {
+  width: 134px;
+  height: 134px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  top: 3%;
+  overflow: hidden;
+  border-radius: 50%;
+
+  border: 10px solid white;
+  box-shadow: 1px 5px 6px rgb(0, 0, 0, 0.16);
+}
+
+.profile-img > img {
+  display: inline;
+  margin: 0 auto;
+  height: 100%;
+  width: auto;
+}
+
+
 </style>
