@@ -12,7 +12,7 @@
       <img class="task-icon" :src="task.icon" />
       <div class="task-middle">
         <div class="grey-text f20">{{task.type}}</div>
-        <div class="task-progress">
+        <div class="mt8">
           <b-progress :value="task.levelPercentage" height="9px" variant="success"></b-progress>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default {
   margin-right: 15px;
 }
 
-.task-progress {
+.mt8 {
   margin-top: 8px;
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div id="taskEntryPage">
-    <div class="task-page-info"> 所有可承接任務 </div>
+    <div class="task-page-info"> 請從下方選擇任務點擊進入 </div>
     <div class="horizontal-line"></div>
     <div class="task-list-container">
       <div v-for="task in allTaskList" :key="task.id" class="task-item" @click="goToDetailPage(task.id)">
@@ -99,7 +99,7 @@ export default {
 }
 
 #taskEntryPage::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .task-page-info {
