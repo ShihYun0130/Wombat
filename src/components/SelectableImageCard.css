@@ -1,0 +1,63 @@
+  .SelectableImageCard__container{
+    display: flex;
+    justify-content: center;
+    width: 95%;
+    margin: auto;
+    padding: 0;
+  }
+  .SelectableImageCard__item {
+    margin: 0px 12px 12px 0px;
+    display: flex;
+  }
+  
+  .SelectableImageCard__thumbnail{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 6px;
+    border: 1px solid #dddddd;
+    border-radius:15px;
+
+    /* padding: 4px;
+    line-height: 20px;
+    border: 1px solid #ddd;
+    border-radius: 20px; */
+  
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+  
+    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.055);
+    -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.055);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.055);
+  
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .SelectableImageCard__thumbnail--selected{
+    background: #0088cc;
+  }
+  
+  .SelectableImageCard__thumbnail--disabled{
+    background: #b9b9b9;
+    cursor: not-allowed;
+  }
+  
+  .SelectableImageCard__thumbnail--disabled > .SelectableImageCard__img{
+    opacity: .5;
+  }
+  
+  .SelectableImageCard__img{
+    -webkit-user-drag: none;
+    max-height: 20rem;
+    max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    border-radius: 10px;
+    transform-origin: center;
+    transition-duration: 0.2s;
+  }
+  

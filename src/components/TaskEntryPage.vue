@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     goToDetailPage(id) {
-      this.$router.push({ path: '/Task-info', params: { id }})
+      this.$router.push({ path: '/Task-info', query: { id }})
     }
   },
   mounted() {

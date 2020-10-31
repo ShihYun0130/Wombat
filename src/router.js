@@ -3,6 +3,7 @@ import TaskEntryPage from './components/TaskEntryPage'
 import TaskInfoPage from './components/TaskInfoPage'
 import LabelResultPage from './components/LabelResultPage'
 import PageNotFound from './components/PageNotFound'
+import ClassificationLabel from './components/ClassificationLabel'
 
 const routes = [
   { path: '/', redirect: '/Profile' },
@@ -40,9 +41,14 @@ const routes = [
   },
   {
     path: '*',
-    component: PageNotFound,
+    component: PageNotFound
+  },
+  {
+    name: 'ClassificationLabel',
+    path: '/classificationLabel',
+    component: ClassificationLabel,
     meta: {
-      title: '個人資訊'
+      title: '分類標註'
     }
   }
 ];
