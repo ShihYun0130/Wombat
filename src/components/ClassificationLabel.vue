@@ -1,30 +1,32 @@
 <template>
-  <div class="classification">
-    <div class="header">
+  <div class="justify-center-column p26" >
+    <div class="task-header">
       <i>
         <img class="small-icon" src="../assets/icons/compare-24px.svg">
       </i>
       <span>
-        <h1 class="taskName p1">
-          {{ taskName }}
-          <span class="emph">{{currentPage}}</span>
-          <span>/{{totalPage}}</span>
-        </h1>
+        <div class="dark-grey bold-text f20">
+          {{ taskTitle }}
+        </div>
       </span>
     </div>
 
-    <h3 class="p2">
+    <div class="p2">
         請問下列圖片哪些屬於
         <span class="emph">{{selectedClass}}</span>
         <span>?</span>
-    </h3>
+    </div>
     <SelectableImageCard :imgList="imgList" :rows="2"/>
-    <div>
-      <button class="btn-lg" type="submit">下一題
-      <i>
-        <img src="../assets/icons/arrow_circle_down-24px.svg">
-      </i>
-      </button>
+    <div style="width: 100%;">
+      <div class="button-right">
+        <button class="btn-lg" type="submit" @click="onSubmitAns">下一題
+        <span style="margin-left:6px;">
+          <i class="inner-button-icon">
+            <img src="../assets/icons/arrow_circle_down-24px.svg">
+          </i>
+        </span>
+        </button>
+      </div>
     </div>
 
 
@@ -33,7 +35,7 @@
 
 <script>
 import SelectableImageCard from './SelectableImageCard.vue'
-// import axios from "axios"
+import axios from "axios"
 
 export default {
   name: 'Classification',
@@ -42,7 +44,6 @@ export default {
   },
   props: {
     msg: String,
-    taskName: String,
   },
   data: function(){
     return{
@@ -54,9 +55,25 @@ export default {
         rows:2,
         currentPage:1,
         totalPage:10,
+        taskTitle: "",
+    }
+  }, methods: {
+    onSubmitAns(){
+      axios
+      .post('http:140.112.107.210:8000/1/saveAnswer',{
+        
+      })
+      .then(response => console.log(response))
+      .catch(function (error) { 
+        console.log(error);
+      });
     }
   },
   mounted() {
+    const title = this.$route.meta.title;
+    var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
+    this.taskTitle = this.$route.query.taskTitle;
+    this.$emit("setTitle", customTitle);
     // this.selectedClass = "狗";
     // axios
     //   .get('https://www.runoob.com/try/ajax/json_demo.json')
@@ -71,10 +88,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .header {
+  .task-header {
     display: flex;
     justify-content: center;
-    align-items: center;
   }
   .emph{
     color:rgb(0,195,0)
@@ -83,6 +99,10 @@ export default {
     color:rgb(82, 82, 82)
   }
   .p2{
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     color:rgb(172, 172, 172)
   }
   .small-icon {
@@ -93,26 +113,35 @@ export default {
     font-size: 15pt;
     margin-top:8px;
   }
-  h3 {
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
   .btn-lg{
     display: flex;
     justify-items: center;
     align-content: center;
     cursor: pointer;
     border:0;
-    border-radius:30pt;
+    border-radius:30px;
     background-color:rgb(0,195,0);
-    font-size: 20pt;
+    font-size: 26px;
     color: white;
-    padding: 8pt 18pt;
+    padding: 4pt 16px;
     font-weight: bold;
     text-align: center;
+    padding-top: 10px;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.24);
   }
-  .button-lg:hover{
+  .btn-lg:hover{
     background-color:rgb(0, 149, 0);
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    box-shadow: 0 4px 6px 0 rgba(0,0,0,0.24);
+  }
+  .inner-button-icon {
+    margin-bottom: 5px;
+  }
+  .p26 {
+    padding: 26px;
+  }
+  .button-right {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
   }
 </style>

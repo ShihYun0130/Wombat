@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div class="start-task-button" @click="startTask">
+    <div class="start-task-button" @click="startTask(taskId, taskTitle)">
       <div class="white-text f26 bold-text">開始任務</div>
     </div>
   </div>
@@ -67,17 +67,20 @@ export default {
       taskExQuestion: "請問下列圖片哪些屬於<span style=\"color:rgb(0, 195, 0)\">數字2</span>?",
       taskExQuesPic: '',
       taskExAnswerHint: "您應該點擊選擇:",
-      taskExAnsPic: ''
+      taskExAnsPic: '',
+      taskId: '',
     }
   },
   methods: {
-    startTask() {
-      // this.$router.push('/Task')
+    startTask(id, taskTitle) {
+      this.$router.push({ path: '/ClassificationLabel', query: { id, taskTitle}})
     }
   },
   mounted() {
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
+    this.taskId=this.$route.query.id
+    console.log(this.taskId)
   }
 }
 </script>

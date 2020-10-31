@@ -1,7 +1,7 @@
 <template>
   <div id="header">
     <img :src="menuIcon" class="menu-icon" @click="openNav" />
-    <div class="title">{{ title }}</div>
+    <div v-html="title" class="title"></div>
     <div class="fake-top-right"></div>
   </div>
 </template>
