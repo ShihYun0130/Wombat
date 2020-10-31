@@ -18,6 +18,9 @@
 </template>
 
 <script>
+import {mapActions} from "vuex"
+
+
 export default {
   name: "SelectableImageCard",
   props: {
@@ -74,6 +77,7 @@ export default {
     this.setInitialSelection();
   },
   methods: {
+    ...mapActions(["onSelectImageListChange"]),
     classThumbnailMultiple(id, isDisabled) {
       const baseClass = `${this.rootClass}__thumbnail`;
       const baseMultipleClass = `${baseClass} is--multiple`;
@@ -124,6 +128,7 @@ export default {
           } else {
             this.multipleSelected.push(objectImage);
             this.$emit("onselectmultipleimage", this.multipleSelected);
+            this.onSelectImageListChange(this.multipleSelected);
           }
         } else {
           this.removeFromMultipleSelected(objectImage.id, true);
