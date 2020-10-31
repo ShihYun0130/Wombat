@@ -3,7 +3,7 @@
     <div v-for="i in rows" :key="i" class="row">
         <div class="container">
             <div v-for="item in imgList" :key="item.path">
-            <img class="label_img" :src="item.path" alt="Card image cap">
+            <img class="label_img" :src="item.path">
             </div>
         </div>
     </div>
