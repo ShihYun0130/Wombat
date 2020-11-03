@@ -20,7 +20,7 @@
     <div style="width: 100%;">
       <div class="button-right">
         <button class="btn-lg" type="submit" @click="onSubmitAns">下一題
-        <span style="margin-left:6px;">
+        <span style="margin-left:6px; margin-top:-2px;">
           <i class="inner-button-icon">
             <img src="../assets/icons/arrow_circle_down-24px.svg">
           </i>

@@ -4,6 +4,7 @@ import TaskInfoPage from './components/TaskInfoPage'
 import LabelResultPage from './components/LabelResultPage'
 import PageNotFound from './components/PageNotFound'
 import ClassificationLabel from './components/ClassificationLabel'
+import NERTaskPage from './components/NERPage'
 
 const routes = [
   { path: '/', redirect: '/Profile' },
@@ -49,6 +50,14 @@ const routes = [
     component: ClassificationLabel,
     meta: {
       title: '分類標註'
+    }
+  },
+  {
+    name: 'NERTaskPage',
+    path: '/NERTaskPage',
+    component: NERTaskPage,
+    meta: {
+      title: '實體標註'
     }
   }
 ];

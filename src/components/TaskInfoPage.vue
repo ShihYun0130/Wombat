@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     startTask(id, taskTitle) {
-      this.$router.push({ path: '/ClassificationLabel', query: { id, taskTitle}})
+      this.$router.push({ path: '/NERTaskPage', query: { id, taskTitle}})
     }
   },
   mounted() {
