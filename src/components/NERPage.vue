@@ -13,12 +13,21 @@
 
     <div class="p2">
         請問下列文字哪些屬於
-        <span class="emph">{{selectedClass}}</span>
+        <span class="emph">{{targetClass}}</span>
         <span>?</span>
     </div>
     <div ref="selectableText" class="selectableText">{{targetParagraph}}</div>
-    <div class="bold-text f18"> 你所選擇的 <span class="emph">{{selectedClass}}</span> 為:</div>
-    <div class="selectedTextBlock" v-if="isShow">{{selectedText}}</div>
+    <div class="bold-text f18"> 你所選擇的 <span class="emph">{{targetClass}}</span> 為:</div>
+    <div v-for="(item, index) in targetClass" :key="index" class="row-display">
+      <div class="bold-text f18" style="margin-right: 10px;" @click="onEditItem(selectedObject[item].index)">{{item}}</div>
+      <div class="selectedTextBlock" v-if="selectedObject[item].isShow" @click="saveSelected">
+        {{selectedObject[item].selectedText}}
+        <span><img class="small-icon" src="../assets/icons/delete.svg"></span>
+      </div>
+    </div>
+    <!-- <button class="start-task-button" type="button" @click="saveSelected">
+      <div class="white-text f26 bold-text">儲存</div>
+    </button> -->
     <div style="width: 100%;">
       <div class="button-right">
         <button class="btn-lg" type="submit" @click="onSubmitAns">下一題
@@ -45,21 +54,28 @@ export default {
   },
   data: function(){
     return{
-        selectedClass:'主體',
+        targetClass:['人名', '企業名', '時間', '地點'],
+        focusClass: 0,
+        selectedObject:{},
         currentPage:1,
         totalPage:10,
         taskTitle: "",
         selectedText: "",
-        isShow: false,
         targetParagraph: "Mark Elliot Zuckerberg is an American media magnate, internet entrepreneur, and philanthropist. He is known for co-founding Facebook, Inc in 2004.",
     }
-  }, methods: {
+  },
+  computed: {
+    // selectedObject: function() {
+
+    // }
+  },
+  methods: {
       onSubmitAns(){
         axios
         .post('http://140.112.107.210:8000/saveAnswer',{
           userId: "",
-          classification: this.selectedClass,
-          answer_picture: this.selectedText,
+          classification: this.targetClass,
+          answer_picture: this.selectedObject,
           taskId: "1"
         })
         .then(response => console.log(response))
@@ -69,29 +85,53 @@ export default {
       },
       // Function to get the Selected Text  
       getSelectedText() { 
+        var target = this.targetClass[this.focusClass];
         // window.getSelection 
         if (window.getSelection) { 
-            this.selectedText = window.getSelection();
-            this.isShow = true;
+            this.selectedObject[target].selectedText = window.getSelection().toString();
+            this.selectedObject[target].isShow = true;
+            console.log(this.selectedObject[target].isShow);
         } 
         // document.getSelection 
         else if (document.getSelection) { 
-            this.selectedText = document.getSelection();
-            this.isShow = true;
+            this.selectedObject[target].selectedText = document.getSelection().toString();
+            this.selectedObject[target].isShow = true;
         } 
         // document.selection 
         else if (document.selection) { 
-            this.selectedText = document.selection.createRange().text;
-            this.isShow = true;
+            this.selectedObject[target].selectedText = document.selection.createRange().text;
+            this.selectedObject[target].isShow = true;
         } else{
-          this.isShow = false;
+          // this.selectedObject[target].isShow = false;
           return; 
         }
         // console.log(this.selectedText.toString());
-        if((/^ *$/.test(this.selectedText)))
-          this.isShow = false;
+        // console.log(this.selectedObject)
+        if((/^ *$/.test(this.selectedObject[target].selectedText)))
+          this.selectedObject[target].isShow = false;
         this.$forceUpdate();
       },
+      saveSelected(){
+        this.focusClass += 1;
+        // while (this.selectedObject[this.targetClass[this.focusClass]]!=""){
+        //   this.focusClass += 1;
+        // }
+      },
+      onEditItem(targetIndex){
+        this.focusClass = targetIndex;
+      },
+      setInitialSelection(){
+        var i;
+        var cnt = 0;
+        for(i of this.targetClass){
+          this.selectedObject[i] = {
+            selectedText:"",
+            color:"",
+            index: cnt++,
+            isShow: false,
+          };
+        }
+      }
   },
   mounted() {
     const title = this.$route.meta.title;
@@ -102,6 +142,8 @@ export default {
     document.addEventListener('selectionchange',() => {
         this.getSelectedText();
     });
+
+    this.setInitialSelection();
   }
 }
 
@@ -184,5 +226,15 @@ export default {
     border-radius: 6px;
     margin-top: 16px;
     margin-bottom: 16px;
+  }
+  .row-display{
+    display: flex;
+    align-items: center;
+  }
+  .blue{
+    background-color: rgb(185, 65, 255);
+  }
+  .red{
+    background-color: rgb(255, 78, 78);
   }
 </style>
