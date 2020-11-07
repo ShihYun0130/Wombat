@@ -20,7 +20,7 @@
     <div class="align-start-column text-left w100 mt20">
       <div class="dark-grey bold-text f20">第3步</div>
       <div class="grey-text f16 text-left mt8"> 請上傳您要作為公開發佈此任務所顯示的企業或團隊代表圖片：</div>
-      <div class="f8 mt8">
+      <div class="f8 mt8 w100">
         <input class="upload-button-input" type="file" accept="image/*" @change="previewImage">
       </div>
       <div v-if="preview" class="grey-text upload-preview mt12 w100">
@@ -57,7 +57,7 @@
     </div>
 
     <div class="w100 justify-center-row">
-      <div class="next-page-button">
+      <div class="next-page-button" @click="nextPage">
         <div class="white-text f20 bold-text">下一階段</div>
       </div>
     </div>
@@ -68,7 +68,7 @@
 <script>
 export default {
   name: "TaskSettingPage",
-  data: function() {
+  data() {
     return {
       preview: null,
       image: null,
@@ -77,16 +77,19 @@ export default {
     }
   },
   methods: {
-    previewImage: function(event) {
-      var input = event.target;
+    previewImage (event) {
+      let input = event.target;
       if (input.files) {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = (e) => {
           this.preview = e.target.result;
         }
-        this.image=input.files[0];
+        this.image = input.files[0];
         reader.readAsDataURL(input.files[0]);
       }
+    },
+    nextPage() {
+      this.$router.push('/Task-example')
     }
   },
   mounted() {
@@ -146,6 +149,6 @@ export default {
 
   box-shadow: 1px 3px 2px rgb(0, 0, 0, 0.13);
 
-  margin: 20px;
+  margin-top: 40px;
 }
 </style>

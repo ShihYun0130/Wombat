@@ -6,6 +6,7 @@ import PageNotFound from './components/PageNotFound'
 import ClassificationLabel from './components/ClassificationLabel'
 import NERTaskPage from './components/NERPage'
 import TaskSettingPage from './components/TaskSettingPage'
+import TaskExamplePage from './components/TaskExamplePage'
 
 const routes = [
   { path: '/', redirect: '/Profile' },
@@ -66,9 +67,17 @@ const routes = [
     }
   },
   {
+    name: 'TaskExamplePage',
+    path: '/Task-example',
+    component: TaskExamplePage,
+    meta: {
+      title: '任務上傳'
+    }
+  },
+  {
     path: '*',
     component: PageNotFound
-  },
+  }
 ];
 
 export default routes;
