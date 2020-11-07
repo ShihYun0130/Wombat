@@ -5,6 +5,7 @@ import LabelResultPage from './components/LabelResultPage'
 import PageNotFound from './components/PageNotFound'
 import ClassificationLabel from './components/ClassificationLabel'
 import NERTaskPage from './components/NERPage'
+import TaskSettingPage from './components/TaskSettingPage'
 
 const routes = [
   { path: '/', redirect: '/Profile' },
@@ -41,10 +42,6 @@ const routes = [
     }
   },
   {
-    path: '*',
-    component: PageNotFound
-  },
-  {
     name: 'ClassificationLabel',
     path: '/classificationLabel',
     component: ClassificationLabel,
@@ -59,7 +56,19 @@ const routes = [
     meta: {
       title: '實體標註'
     }
-  }
+  },
+  {
+    name: 'TaskSettingPage',
+    path: '/Task-setting',
+    component: TaskSettingPage,
+    meta: {
+      title: '任務上傳'
+    }
+  },
+  {
+    path: '*',
+    component: PageNotFound
+  },
 ];
 
 export default routes;

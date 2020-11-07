@@ -170,9 +170,6 @@ export default {
   align-items: center;
 
   box-shadow: 1px 3px 2px rgb(0, 0, 0, 0.13);
-
-  position: fixed;
-  bottom: 40px;
 }
 .white-text {
   color: white;

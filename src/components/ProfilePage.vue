@@ -170,7 +170,7 @@ export default {
 
 .go-to-task-button {
   width: 212px;
-  height: 52px;
+  height: 52px!important;
   border-radius: 30px;
   background: rgb(0, 195, 0);
 
@@ -181,8 +181,8 @@ export default {
 
   box-shadow: 1px 3px 2px rgb(0, 0, 0, 0.13);
 
-  position: fixed;
-  bottom: 40px;
+  margin: 20px 0;
+  padding: 14px 0;
 }
 
 .dashBoard-text {
