@@ -12,22 +12,19 @@
     </div>
 
     <div class="p2">
-        請問下列文字哪些屬於
-        <span class="emph">{{targetClass}}</span>
-        <span>?</span>
+        請標出下列文字分別屬於
+        <span v-for="(item, index) in targetClass" :key="index" class="dark-grey bold-text f18" :style="{color:colorList[index]}" style="margin-right: 10px;">{{item}}</span>
+        <span>的類別</span>
     </div>
-    <div ref="selectableText" class="selectableText">{{targetParagraph}}</div>
-    <div class="bold-text f18"> 你所選擇的 <span class="emph">{{targetClass}}</span> 為:</div>
-    <div v-for="(item, index) in targetClass" :key="index" class="row-display">
-      <div class="bold-text f18" style="margin-right: 10px;" @click="onEditItem(selectedObject[item].index)">{{item}}</div>
-      <div class="selectedTextBlock" v-if="selectedObject[item].isShow" @click="saveSelected">
-        {{selectedObject[item].selectedText}}
-        <span><img class="small-icon" src="../assets/icons/delete.svg"></span>
+    <div class="bold-text f18"> 你所選擇的 <span :style="{color: colorList[focusClass]}">{{targetClass[focusClass]}}</span> 為:</div>
+    <div class="displayBlock" style="height: 40px" v-if="!currentSelectedText"></div>
+    <div class="displayBlock" :style="{color: colorList[focusClass], border: '3px solid '+ colorList[focusClass]}" v-if="currentSelectedText">{{currentSelectedText}}</div>
+    <div v-html="targetHtml" class='selectableText'></div>
+    <div class="row-display">
+      <div v-for="(item, index) in targetClass" :key="index">
+        <div class="selectedTextBlock" :class="[selectedObject[item].color, {focus: focusClass == index && selectedObject[item].isEdit}]" style="margin-right: 10px;" @click="onClick(index)">{{item}}</div>
       </div>
     </div>
-    <!-- <button class="start-task-button" type="button" @click="saveSelected">
-      <div class="white-text f26 bold-text">儲存</div>
-    </button> -->
     <div style="width: 100%;">
       <div class="button-right">
         <button class="btn-lg" type="submit" @click="onSubmitAns">下一題
@@ -46,6 +43,13 @@
 
 <script>
 import axios from "axios"
+import $ from 'jquery'
+import Vue from 'vue';
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
+// Init plugin
+Vue.use(Loading);
 
 export default {
   name: 'NERTaskPage',
@@ -57,68 +61,101 @@ export default {
         targetClass:['人名', '企業名', '時間', '地點'],
         focusClass: 0,
         selectedObject:{},
+        currentSelectedText:"",
         currentPage:1,
         totalPage:10,
         taskTitle: "",
         selectedText: "",
-        targetParagraph: "Mark Elliot Zuckerberg is an American media magnate, internet entrepreneur, and philanthropist. He is known for co-founding Facebook, Inc in 2004.",
+        targetParagraph: "馬克·艾略特·祖克柏出生於美國紐約州白原市，是知名的社群網站Facebook的創始人、董事長兼執行長，同時也是一名軟體設計師。Facebook是由他和哈佛大學的同學達斯汀·莫斯科維茲、愛德華多·薩維林、克里斯·舒爾茨於2004年共同創立，被譽爲Facebook教主",
+        targetHtml: "",
+        colorList: ["#80A1D4", "#345995", "#66C7F4", "#98A886", "#023C40", "#042A2B"],
+        colorClassList: ["col1", "col2", "col3", "col4", "col5", "col6"],
     }
   },
   computed: {
-    // selectedObject: function() {
-
-    // }
+    selectableTexthtml: function() {
+      return "<div ref='selectableText' class='selectableText'>" + this.targetParagraph + "</div>";
+    },
+    output: function() {
+      var ans = {};
+      for(var target of this.targetClass){
+        ans[target] = this.selectedObject[target].selectedText;
+      }
+      return {
+        taskType: "NER",
+        userId: "",
+        taskId: "",
+        NERObject: ans,
+      };
+    }
   },
   methods: {
       onSubmitAns(){
         axios
-        .post('http://140.112.107.210:8000/saveAnswer',{
-          userId: "",
-          classification: this.targetClass,
-          answer_picture: this.selectedObject,
-          taskId: "1"
-        })
+        .post('http://140.112.107.210:8000/saveAnswer', this.output)
         .then(response => console.log(response))
         .catch(function (error) { 
           console.log(error);
         });
       },
+      selectedHtml: function(entityName, selectedText, entityClass) {
+        return `<button class='selectedTextBlock ${entityClass}' id="${entityName}"> ${selectedText} </button>`
+      },
       // Function to get the Selected Text  
       getSelectedText() { 
         var target = this.targetClass[this.focusClass];
+        if(this.selectedObject[target].selectedText != ""){
+          alert("一個實體只能對應到一段文字，如果要變更請先刪除原圈選文字後再繼續");
+          return false;
+        }
+        else if (this.focusClass >= this.targetClass.length){
+          alert("超過target Class長度");
+          console.log(this.focusClass)
+          return false;
+        }
         // window.getSelection 
         if (window.getSelection) { 
-            this.selectedObject[target].selectedText = window.getSelection().toString();
-            this.selectedObject[target].isShow = true;
-            console.log(this.selectedObject[target].isShow);
+            this.selectedObject[target].selectedText = window.getSelection().toString()
         } 
         // document.getSelection 
         else if (document.getSelection) { 
             this.selectedObject[target].selectedText = document.getSelection().toString();
-            this.selectedObject[target].isShow = true;
         } 
         // document.selection 
         else if (document.selection) { 
             this.selectedObject[target].selectedText = document.selection.createRange().text;
-            this.selectedObject[target].isShow = true;
         } else{
-          // this.selectedObject[target].isShow = false;
-          return; 
+          return false; 
         }
-        // console.log(this.selectedText.toString());
-        // console.log(this.selectedObject)
         if((/^ *$/.test(this.selectedObject[target].selectedText)))
-          this.selectedObject[target].isShow = false;
+        {
+          return false;
+        }
+        this.targetHtml = this.targetHtml.replace(this.selectedObject[target].selectedText, this.selectedHtml(target, this.selectedObject[target].selectedText, this.selectedObject[target].color));
+        return true;
+      },
+      onClick(targetIndex){
+        this.focusClass = targetIndex;
+        var target = this.targetClass[targetIndex];
+        if(this.selectedObject[target].isEdit){
+          if(targetIndex < this.targetClass.length)
+            var isSuccess = this.getSelectedText();
+          this.selectedObject[target].isEdit = false;
+          if(this.focusClass < this.targetClass.length - 1 && isSuccess){
+            this.focusClass += 1;
+            this.selectedObject[this.targetClass[this.focusClass]].isEdit = true;
+            this.currentSelectedText="";
+          }
+        }
+        else{
+          this.selectedObject[target].isEdit = true;
+        }
         this.$forceUpdate();
       },
-      saveSelected(){
-        this.focusClass += 1;
-        // while (this.selectedObject[this.targetClass[this.focusClass]]!=""){
-        //   this.focusClass += 1;
-        // }
-      },
-      onEditItem(targetIndex){
-        this.focusClass = targetIndex;
+      onDeleteSelection(entityName){
+        this.targetHtml = this.targetHtml.replace(this.selectedHtml(entityName, this.selectedObject[entityName].selectedText, this.selectedObject[entityName].color), this.selectedObject[entityName].selectedText);
+        this.selectedObject[entityName].selectedText = "";
+        this.$forceUpdate();
       },
       setInitialSelection(){
         var i;
@@ -126,11 +163,12 @@ export default {
         for(i of this.targetClass){
           this.selectedObject[i] = {
             selectedText:"",
-            color:"",
+            color:this.colorClassList[cnt],
             index: cnt++,
-            isShow: false,
+            isEdit: false,
           };
         }
+        this.selectedObject[this.targetClass[0]].isEdit = true;
       }
   },
   mounted() {
@@ -138,24 +176,35 @@ export default {
     var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
     this.taskTitle = this.$route.query.taskTitle;
     this.$emit("setTitle", customTitle);
-
-    document.addEventListener('selectionchange',() => {
-        this.getSelectedText();
-    });
-
     this.setInitialSelection();
+    document.addEventListener('selectionchange',() => {
+        this.currentSelectedText = window.getSelection().toString();
+    });
+    this.targetHtml = this.selectableTexthtml;
+    document.addEventListener("click", function(event){
+      if(event.target.id != ""){
+        if ($(event.target).hasClass('selectedTextBlock')){
+          this.onDeleteSelection(event.target.id);
+        }
+      }
+    }.bind(this));
+    let loader = this.$loading.show({
+      // Optional parameters
+      canCancel: true,
+      onCancel: this.onCancel,
+    });
+    setTimeout(() => {
+      loader.hide()
+    },100)      
   }
 }
 
 </script>
 
-<style scoped>
+<style>
   .task-header {
     display: flex;
     justify-content: center;
-  }
-  .emph{
-    color:rgb(0,195,0)
   }
   .p1{
     color:rgb(82, 82, 82)
@@ -201,10 +250,7 @@ export default {
   .button-right {
     display: flex;
     justify-content: flex-end;
-    margin-top: 10px;
-    position: fixed;
-    bottom: 60px;
-    right:40px;
+    margin-top: 60px;
   }
   .selectableText {
     font-size: 20px;
@@ -224,17 +270,52 @@ export default {
     color: white;
     padding: 5px 10px;
     border-radius: 6px;
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin: 5px;
+    transition: 1s;
+    /* margin-top: 16px;
+    margin-bottom: 16px; */
+  }
+  .displayBlock {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin: 15px;
   }
   .row-display{
     display: flex;
     align-items: center;
+  }
+  .focus{
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.164),0 5px 6px 0 rgba(0, 0, 0, 0.137);
+    filter: brightness(110%);
+    transition: 1s;
   }
   .blue{
     background-color: rgb(185, 65, 255);
   }
   .red{
     background-color: rgb(255, 78, 78);
+  }
+  .emph{
+    color: rgb(0, 195, 0);
+  }
+  .col1{
+    background-color: #80A1D4;
+  }
+  .col2{
+    background-color: #345995;
+  }
+  .col3{
+    background-color: #66C7F4;
+  }
+  .col4{
+    background-color: #98A886;
+  }
+  .col5{
+    background-color: #023C40;
+  }
+  .col6{
+    background-color: #042A2B;
   }
 </style>
