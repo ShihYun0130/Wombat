@@ -163,6 +163,7 @@ export default {
   mounted() {
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
+    console.log('screenshot', this.$store.state.sampleScreenshot)
   }
 }
 </script>

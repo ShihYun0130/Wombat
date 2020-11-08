@@ -16,6 +16,9 @@ export default new Vuex.Store({
       taskPayRule: '',
       taskLeastPayLimitPage: '',
       answerIdList: [],
+      labeledDataList: {},
+      unlabeledDataList: [],
+      sampleScreenshot: ''
     },
     actions:{
       onSelectImageListChange({commit}, imageList) {
@@ -40,6 +43,15 @@ export default new Vuex.Store({
       },
       pushToAnswerIdList(state, answerId) {
         state.answerIdList.push(answerId);
+      },
+      setLabelData(state, labelData) {
+        console.log('labelData', labelData);
+        state.labeledDataList = labelData.labeledDataList
+        state.unlabeledDataList = labelData.unlabeledDataList
+      },
+      setSampleScreenshot(state, screenshot) {
+        console.log('screenshot', screenshot)
+        state.sampleScreenshot = screenshot
       }
     },
     getters:{}
