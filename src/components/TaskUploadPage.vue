@@ -1,0 +1,183 @@
+<template>
+  <div id="task-upload-page">
+    <div class="dark-grey bold-text f20 justify-center-row w100">上傳任務類別與圖檔</div>
+    <div class="horizontal-line"></div>
+
+    <div class="grey-text w100 text-left mt20">
+      <div class="dark-grey bold-text f20">第1步</div>
+      <div class="justify-start-row">
+        <div class="mt8"> 請輸入類別數量：</div>
+          <div class="align-end-row">
+            <input @change="changeCategoryNum" class="task-number-input task-name-input grey-text mt12 f16" />
+            <div class="category-number-button f14" @click="checkCategoryNum">確定</div>
+          </div>
+        </div>
+    </div>
+
+    <div class="align-start-column text-left w100 mt20" v-if="isCheck">
+      <div class="dark-grey bold-text f20">第2步</div>
+
+      <div v-for="num in categoryNumList" :key="num">
+        <div class="align-end-row w100 flex-nowrap">
+          <div class="grey-text f16 text-left mt8"> 類別名稱：</div>
+          <input class="task-name-input grey-text mt12 f16 w65" />
+        </div>
+        <div class="">
+          <div class="grey-text f16 text-left mt8"> 上傳此類別範例圖檔：</div>
+          <div class="f8 mt8">
+            <input class="upload-button-input" type="file" accept=".jpg, .jpeg, .png" @change="previewImage">
+          </div>
+          <div v-if="preview[num]" class="grey-text upload-preview mt12 w80">
+            <img :src="preview[num]" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="align-start-column text-left w100 mt20" v-if="isCheck">
+      <div class="dark-grey bold-text f20">第3步</div>
+      <div class="">
+        <div class="grey-text f16 text-left mt8"> 上傳其他未標註圖檔：</div>
+        <div class="f8 mt8">
+          <input class="upload-button-input" type="file" accept=".jpg, .jpeg, .png" multiple="multiple" @change="uploadMultipleImage">
+        </div>
+        <div v-if="multiplePreview.length" class="justify-start-row upload-multiple-preview grey-text upload-preview mt12">
+          <img v-for="item in multiplePreview" :key="item" :src="item" class="mt8" />
+        </div>
+      </div>
+    </div>
+
+    <div class="w100 justify-center-row" v-if="isCheck">
+      <div class="next-page-button" @click="nextPage">
+        <div class="white-text f20 bold-text">去示範標註動作</div>
+      </div>
+    </div>
+  </div>  
+</template>
+
+<script>
+export default {
+  name: "TaskUploadPage",
+  data() {
+    return {
+      isCheck: false,
+      categoryNum: 0,
+      categoryNumList: [],
+      preview: [],
+      image: [],
+      multiplePreview: [],
+      multipleImage: [],
+    }
+  },
+  methods: {
+    checkCategoryNum() {
+      this.isCheck = true
+      for(var i = 0; i < this.categoryNum; i++) {
+        this.categoryNumList.push(i);
+      }
+    },
+    changeCategoryNum(event) {
+      this.isCheck = false
+      this.categoryNumList = []
+      this.categoryNum = event.target.value
+    },
+    removeCategoryNum() {
+      this.isCheck = false
+      this.categoryNum = 0
+      this.categoryNumList = []
+    },
+    previewImage(event) {
+      let input = event.target;
+      if (input.files) {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          this.preview.push(e.target.result);
+        }
+        this.image.push(input.files[0]);
+        reader.readAsDataURL(input.files[0]);
+      }
+    },
+    async uploadMultipleImage(event) {
+      let input = event.target;
+      let count = input.files.length;
+      let index = 0;
+      if (input.files) {
+        while(count --) {
+          let reader = new FileReader();
+          reader.onload = (e) => {
+            this.multiplePreview.push(e.target.result);
+          }
+          this.multipleImage.push(input.files[index]);
+          reader.readAsDataURL(input.files[index])
+          index ++;
+        }
+      }
+    },
+    async convertFilesToString(file) {
+      const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+      console.log('base', await toBase64(file))
+      // const imageString = await toBase64(file)
+      return await toBase64(file);
+    },
+    async nextPage() {
+      this.convertFilesToString(this.multipleImage[0])
+      Promise.all(this.multipleImage.map(file => this.convertFilesToString(file)))
+      .then(value => {
+        console.log('value', value)
+      })
+    }
+  },
+  mounted() {
+    const title = this.$route.meta.title
+    this.$emit("setTitle", title)
+  }
+}
+</script>
+
+<style>
+#task-upload-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 35px;
+  flex-wrap: wrap;
+}
+.category-number-button {
+  margin-left: 20px;
+  background: rgb(0, 195, 0);
+  padding: 5px 10px;
+  white-space: nowrap;
+  border-radius: 5px;
+  color: white;
+  box-shadow: 1px 3px 3px rgb(0, 0, 0, 0.13);
+}
+.task-number-input {
+  width: 50px;
+}
+.align-end-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+.w65 {
+  width: 65%;
+}
+.upload-multiple-preview {
+  width: 90%;
+  flex-wrap: wrap;
+}
+.upload-multiple-preview>img {
+  height: 20px;
+  max-width: 20px;
+}
+</style>
