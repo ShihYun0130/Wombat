@@ -7,6 +7,9 @@
       <div class="nav" @click="routeToTask">
         任務看板
       </div>
+      <div class="nav" @click="routeToTaskUpload">
+        任務上傳
+      </div>
       <img :src="cross" class="crossIcon" @click="closeNav" />
     </div>
   </div>
@@ -34,6 +37,10 @@ export default {
     },
     routeToTask() {
       this.$router.push({ name: "tasks" })
+      this.$emit("closeNav")
+    },
+    routeToTaskUpload() {
+      this.$router.push({ name: "TaskUploadPage" })
       this.$emit("closeNav")
     }
   },
