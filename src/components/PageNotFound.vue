@@ -6,7 +6,11 @@
 
 <script>
 export default {
-  name: "PageNotFound"
+  name: "PageNotFound",
+  mounted() {
+    const title = ''
+    this.$emit("setTitle", title)
+  }
 }
 </script>
 
