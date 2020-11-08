@@ -66,7 +66,7 @@ export default {
         labelList:[],
         taskId:"",
         taskType:"",
-        isExample: false
+        isExample: false,
     }
   }, 
   computed: {
