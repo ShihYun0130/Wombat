@@ -22,7 +22,7 @@
     <div v-html="targetHtml" class='selectableText'></div>
     <div class="row-display">
       <div v-for="(item, index) in targetClass" :key="index">
-        <div class="selectedTextBlock" :class="[selectedObject[item].color, {focus: focusClass == index && selectedObject[item].isEdit}]" style="margin-right: 10px;" @click="onClick(index)">{{item}}</div>
+        <div class="focusButton" :class="[selectedObject[item].color, {focus: focusClass == index && selectedObject[item].isEdit}]" style="margin-right: 10px;" @click="onClick(index)">{{item}}</div>
       </div>
     </div>
     <div style="width: 100%;">
@@ -58,7 +58,7 @@ export default {
   },
   data: function(){
     return{
-        targetClass:['人名', '企業名', '時間', '地點'],
+        targetClass:[],
         focusClass: 0,
         selectedObject:{},
         currentSelectedText:"",
@@ -66,9 +66,9 @@ export default {
         totalPage:10,
         taskTitle: "",
         selectedText: "",
-        targetParagraph: "馬克·艾略特·祖克柏出生於美國紐約州白原市，是知名的社群網站Facebook的創始人、董事長兼執行長，同時也是一名軟體設計師。Facebook是由他和哈佛大學的同學達斯汀·莫斯科維茲、愛德華多·薩維林、克里斯·舒爾茨於2004年共同創立，被譽爲Facebook教主",
+        targetParagraph: "",
         targetHtml: "",
-        colorList: ["#80A1D4", "#345995", "#66C7F4", "#98A886", "#023C40", "#042A2B"],
+        colorList: ["#66C7F4", "#527cbb", "#345995", "#98A886", "#023C40", "#042A2B"],
         colorClassList: ["col1", "col2", "col3", "col4", "col5", "col6"],
     }
   },
@@ -82,9 +82,10 @@ export default {
         ans[target] = this.selectedObject[target].selectedText;
       }
       return {
-        taskType: "NER",
-        userId: "",
-        taskId: "",
+        taskType: "ner",
+        userId: "userId01",
+        taskId: "taskId02",
+        labelId: "labelId01",
         NERObject: ans,
       };
     }
@@ -109,8 +110,6 @@ export default {
           return false;
         }
         else if (this.focusClass >= this.targetClass.length){
-          alert("超過target Class長度");
-          console.log(this.focusClass)
           return false;
         }
         // window.getSelection 
@@ -169,6 +168,45 @@ export default {
           };
         }
         this.selectedObject[this.targetClass[0]].isEdit = true;
+      },
+      async queryTaskInfo(){
+        // loading page
+        let loader = this.$loading.show({
+          // Optional parameters
+          canCancel: true,
+          onCancel: this.onCancel,
+        });
+        //get all entitys
+        const response = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
+        {
+            taskId: "taskId02",
+            userId: "userId01",
+        });
+        console.log(response.data.data);
+        this.targetClass = response.data.data;
+        //get paragraph
+        const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
+        {
+            taskId: "taskId02",
+            taskType: "ner",
+            userId: "userId01",
+            labelCount: 1,
+        });
+        console.log(response2.data.data);
+        this.targetParagraph = response2.data.data.label.targetParagraph;
+        document.addEventListener('selectionchange',() => {
+            this.currentSelectedText = window.getSelection().toString();
+        });
+        this.targetHtml = this.selectableTexthtml;
+        document.addEventListener("click", function(event){
+          if(event.target.id != ""){
+            if ($(event.target).hasClass('selectedTextBlock')){
+              this.onDeleteSelection(event.target.id);
+            }
+          }
+        }.bind(this));
+        this.setInitialSelection();
+        loader.hide();
       }
   },
   mounted() {
@@ -176,26 +214,7 @@ export default {
     var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
     this.taskTitle = this.$route.query.taskTitle;
     this.$emit("setTitle", customTitle);
-    this.setInitialSelection();
-    document.addEventListener('selectionchange',() => {
-        this.currentSelectedText = window.getSelection().toString();
-    });
-    this.targetHtml = this.selectableTexthtml;
-    document.addEventListener("click", function(event){
-      if(event.target.id != ""){
-        if ($(event.target).hasClass('selectedTextBlock')){
-          this.onDeleteSelection(event.target.id);
-        }
-      }
-    }.bind(this));
-    let loader = this.$loading.show({
-      // Optional parameters
-      canCancel: true,
-      onCancel: this.onCancel,
-    });
-    setTimeout(() => {
-      loader.hide()
-    },100)      
+    this.queryTaskInfo();
   }
 }
 
@@ -271,9 +290,23 @@ export default {
     padding: 5px 10px;
     border-radius: 6px;
     margin: 5px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.253),0 5px 6px 0 rgba(0, 0, 0, 0.137);
     transition: 1s;
-    /* margin-top: 16px;
-    margin-bottom: 16px; */
+  }
+  .focusButton{
+    background-color: rgb(0, 195, 0);
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin: 5px;
+    transition: 1s;
+  }
+  .focus{
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.589),0 5px 6px 0 rgba(0, 0, 0, 0.137);
+    filter: brightness(110%);
+    transition: 1s;
   }
   .displayBlock {
     font-weight: bold;
@@ -286,11 +319,6 @@ export default {
     display: flex;
     align-items: center;
   }
-  .focus{
-    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.164),0 5px 6px 0 rgba(0, 0, 0, 0.137);
-    filter: brightness(110%);
-    transition: 1s;
-  }
   .blue{
     background-color: rgb(185, 65, 255);
   }
@@ -301,13 +329,13 @@ export default {
     color: rgb(0, 195, 0);
   }
   .col1{
-    background-color: #80A1D4;
+    background-color: #66C7F4;
   }
   .col2{
-    background-color: #345995;
+    background-color: #527cbb;
   }
   .col3{
-    background-color: #66C7F4;
+    background-color: #345995;
   }
   .col4{
     background-color: #98A886;
