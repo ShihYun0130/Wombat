@@ -13,7 +13,7 @@
 
     <div class="p2">
         請標出下列文字分別屬於
-        <span v-for="(item, index) in targetClass" :key="index" class="dark-grey bold-text f18" :style="{color:colorList[index]}" style="margin-right: 10px;">{{item}}</span>
+        <span v-for="(item, index) in targetClass" :key="index" :style="{color:colorList[index]}" style="margin-right: 10px;">{{item}}</span>
         <span>的類別</span>
     </div>
     <div class="bold-text f18"> 你所選擇的 <span :style="{color: colorList[focusClass]}">{{targetClass[focusClass]}}</span> 為:</div>
