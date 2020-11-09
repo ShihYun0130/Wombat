@@ -8,6 +8,8 @@ import NERTaskPage from './components/NERPage'
 import TaskSettingPage from './components/TaskSettingPage'
 import TaskExamplePage from './components/TaskExamplePage'
 import TaskUploadPage from './components/TaskUploadPage'
+import SuccessPage from './components/SuccessPage'
+import OwnedTasksPage from './components/OwnedTasksPage'
 
 const routes = [
   { path: '/', redirect: '/Profile' },
@@ -81,6 +83,22 @@ const routes = [
     component: TaskUploadPage,
     meta: {
       title: '任務上傳'
+    }
+  },
+  {
+    name: "SuccessPage",
+    path: '/Success',
+    component: SuccessPage,
+    meta: {
+      title: '建立成功'
+    }
+  },
+  {
+    name: "OwnedTasksPage",
+    path: '/My-tasks',
+    component: OwnedTasksPage,
+    meta: {
+      title: '我的任務'
     }
   },
   {

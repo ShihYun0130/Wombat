@@ -41,6 +41,7 @@
     <div class="start-task-button" @click="startTask(taskId, taskTitle, taskType)">
       <div class="white-text f26 bold-text">開始任務</div>
     </div>
+    
   </div>
 </template>
 

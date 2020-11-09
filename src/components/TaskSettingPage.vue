@@ -77,6 +77,8 @@
       </div>
     </div>
 
+    
+
     <!-- <div id="screenshot"></div> -->
     
   </div>
@@ -102,6 +104,7 @@ export default {
       taskLeastPayLimitPage: '',
       isImageLabel: false,
       isTextLabel: false,
+      isError: true
     }
   },
   methods: {
@@ -140,6 +143,14 @@ export default {
       this.taskIcon = await this.convertFilesToString(this.image)
     },
     nextPage() {
+      if (this.taskOwner === '' || this.taskType === '' || this.taskIcon === '' || this.taskStartDate === '' || this.taskTitle === '' || this.taskDescription === '' || this.taskPayRule === '' || this.taskLeastPayLimitPage === '') {
+        this.$toasted.show('請確認所有欄位都已完整填寫', {
+          position: 'bottom-center',
+          type: 'error',
+          duration: 3000
+        })
+        return
+      }
       this.$store.commit('setTaskSettingInfo', {
         taskOwner: this.taskOwner,
         taskType: this.taskType,

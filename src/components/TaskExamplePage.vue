@@ -52,6 +52,8 @@
         <div class="white-text f20 bold-text">完成囉!!</div>
       </div>
     </div>
+
+    
   </div>
 </template>
 
@@ -105,7 +107,7 @@ export default {
       this.taskIcon = await this.convertFilesToString(this.image)
     },
     nextPage() {
-      this.$route.push('/Data-upload')
+      this.$router.push('/Success')
     }
   },
   mounted() {
@@ -113,8 +115,8 @@ export default {
     this.$emit("setTitle", title)
 
     console.log('screenshot in example page', this.$store.state.sampleScreenshot)
-    // this.sampleTaskImage = this.$store.state.sampleScreenshot
-    this.sampleTaskImage = "https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/75576600_3078766742150594_1763162161808408576_o.jpg?_nc_cat=104&ccb=2&_nc_sid=09cbfe&_nc_ohc=z8GKpxc9iF0AX_QETVm&_nc_ht=scontent-tpe1-1.xx&oh=d061df47afe67c97875fe7dc91be332d&oe=5FC1E554"
+    this.sampleTaskImage = this.$store.state.sampleScreenshot
+    // this.sampleTaskImage = "https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/75576600_3078766742150594_1763162161808408576_o.jpg?_nc_cat=104&ccb=2&_nc_sid=09cbfe&_nc_ohc=z8GKpxc9iF0AX_QETVm&_nc_ht=scontent-tpe1-1.xx&oh=d061df47afe67c97875fe7dc91be332d&oe=5FC1E554"
   }
 }
 </script>

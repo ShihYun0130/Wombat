@@ -8,11 +8,12 @@
       <!-- <div class="justify-start-row"> -->
         <div class="mt8"> 請輸入類別數量：</div>
           <div class="align-end-row">
-            <input @change="changeCategoryNum" class="task-name-input grey-text mt12 f16" />
+            <input v-model="categoryNum" @change="changeCategoryNum" class="task-name-input grey-text mt12 f16" />
             <div class="category-number-button f14" :class="{ isClicked: isCheck }" @click="checkCategoryNum">確定</div>
             <div class="reset-button category-number-button f14" :class="{ isClicked: !isCheck }" @click="resetCategoryNum">重設</div>
           </div>
         </div>
+        <div class="hint-text" v-if="!isNum">請輸入一個大於 0 的數字</div>
     <!-- </div> -->
 
     <div class="align-start-column text-left w100 mt20" v-if="isCheck">
@@ -71,13 +72,19 @@ export default {
       multiplePreview: [],
       multipleImage: [],
       labeledImageStringList: [],
-      unlabeledImageStringList: []
+      unlabeledImageStringList: [],
+      isNum: true
     }
   },
   methods: {
     checkCategoryNum() {
-      if (this.isCheck || this.categoryNum === 0) return 
+      if (this.isCheck) return
+      if (this.categoryNum === 0 || parseFloat(this.categoryNum).toString() == "NaN") {
+        this.isNum = false
+        return
+      }
       this.isCheck = true
+      this.isNum = true
       for(var i = 0; i < this.categoryNum; i++) {
         this.categoryNumList.push(i);
       }
@@ -137,6 +144,14 @@ export default {
       return await toBase64(file);
     },
     async nextPage() {
+      if (this.categories.length !== this.categoryNum || this.unlabeledImageStringList.length === 0) {
+        this.$toasted.show('請確認所有欄位都已完整填寫', {
+          position: 'bottom-center',
+          type: 'error',
+          duration: 3000
+        })
+        return
+      }
       this.convertFilesToString(this.multipleImage[0])
       const unlabeledList = JSON.parse(JSON.stringify(this.unlabeledImageStringList))
       console.log('unlabeledList', unlabeledList)
@@ -197,6 +212,10 @@ export default {
 }
 .reset-button {
   background: rgb(255, 76, 76)!important;
+}
+.hint-text {
+  font-size: 10px;
+  color: rgb(255, 76, 76);
 }
 .category-number-button {
   margin-left: 20px;
