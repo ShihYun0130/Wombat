@@ -12,13 +12,19 @@
     </div>
 
     <div class="p2">
-        請問下列文字哪些屬於
-        <span class="emph">{{selectedClass}}</span>
-        <span>?</span>
+        請標出下列文字分別屬於
+        <span v-for="(item, index) in targetClass" :key="index" :style="{color:colorList[index]}" style="margin-right: 10px;">{{item}}</span>
+        <span>的類別</span>
     </div>
-    <div ref="selectableText" class="selectableText">{{targetParagraph}}</div>
-    <div class="bold-text f18"> 你所選擇的 <span class="emph">{{selectedClass}}</span> 為:</div>
-    <div class="selectedTextBlock" v-if="isShow">{{selectedText}}</div>
+    <div class="bold-text f18"> 你所選擇的 <span :style="{color: colorList[focusClass]}">{{targetClass[focusClass]}}</span> 為:</div>
+    <div class="displayBlock" style="height: 40px" v-if="!currentSelectedText"></div>
+    <div class="displayBlock" :style="{color: colorList[focusClass], border: '3px solid '+ colorList[focusClass]}" v-if="currentSelectedText">{{currentSelectedText}}</div>
+    <div v-html="targetHtml" class='selectableText'></div>
+    <div class="row-display">
+      <div v-for="(item, index) in targetClass" :key="index">
+        <div class="focusButton" :class="[selectedObject[item].color, {focus: focusClass == index && selectedObject[item].isEdit}]" style="margin-right: 10px;" @click="onClick(index)">{{item}}</div>
+      </div>
+    </div>
     <div style="width: 100%;">
       <div class="button-right">
         <button class="btn-lg" type="submit" @click="onSubmitAns">下一題
@@ -37,6 +43,13 @@
 
 <script>
 import axios from "axios"
+import $ from 'jquery'
+import Vue from 'vue';
+import Loading from 'vue-loading-overlay';
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
+// Init plugin
+Vue.use(Loading);
 
 export default {
   name: 'NERTaskPage',
@@ -45,75 +58,172 @@ export default {
   },
   data: function(){
     return{
-        selectedClass:'主體',
+        targetClass:[],
+        focusClass: 0,
+        selectedObject:{},
+        currentSelectedText:"",
         currentPage:1,
         totalPage:10,
         taskTitle: "",
         selectedText: "",
-        isShow: false,
-        targetParagraph: "Mark Elliot Zuckerberg is an American media magnate, internet entrepreneur, and philanthropist. He is known for co-founding Facebook, Inc in 2004.",
+        targetParagraph: "",
+        targetHtml: "",
+        colorList: ["#66C7F4", "#527cbb", "#345995", "#98A886", "#023C40", "#042A2B"],
+        colorClassList: ["col1", "col2", "col3", "col4", "col5", "col6"],
     }
-  }, methods: {
+  },
+  computed: {
+    selectableTexthtml: function() {
+      return "<div ref='selectableText' class='selectableText'>" + this.targetParagraph + "</div>";
+    },
+    output: function() {
+      var ans = {};
+      for(var target of this.targetClass){
+        ans[target] = this.selectedObject[target].selectedText;
+      }
+      return {
+        taskType: "ner",
+        userId: "userId01",
+        taskId: "taskId02",
+        labelId: "labelId01",
+        NERObject: ans,
+      };
+    }
+  },
+  methods: {
       onSubmitAns(){
         axios
-        .post('http://140.112.107.210:8000/saveAnswer',{
-          userId: "",
-          classification: this.selectedClass,
-          answer_picture: this.selectedText,
-          taskId: "1"
-        })
+        .post('http://140.112.107.210:8000/saveAnswer', this.output)
         .then(response => console.log(response))
         .catch(function (error) { 
           console.log(error);
         });
       },
+      selectedHtml: function(entityName, selectedText, entityClass) {
+        return `<button class='selectedTextBlock ${entityClass}' id="${entityName}"> ${selectedText} </button>`
+      },
       // Function to get the Selected Text  
       getSelectedText() { 
+        var target = this.targetClass[this.focusClass];
+        if(this.selectedObject[target].selectedText != ""){
+          alert("一個實體只能對應到一段文字，如果要變更請先刪除原圈選文字後再繼續");
+          return false;
+        }
+        else if (this.focusClass >= this.targetClass.length){
+          return false;
+        }
         // window.getSelection 
         if (window.getSelection) { 
-            this.selectedText = window.getSelection();
-            this.isShow = true;
+            this.selectedObject[target].selectedText = window.getSelection().toString()
         } 
         // document.getSelection 
         else if (document.getSelection) { 
-            this.selectedText = document.getSelection();
-            this.isShow = true;
+            this.selectedObject[target].selectedText = document.getSelection().toString();
         } 
         // document.selection 
         else if (document.selection) { 
-            this.selectedText = document.selection.createRange().text;
-            this.isShow = true;
+            this.selectedObject[target].selectedText = document.selection.createRange().text;
         } else{
-          this.isShow = false;
-          return; 
+          return false; 
         }
-        // console.log(this.selectedText.toString());
-        if((/^ *$/.test(this.selectedText)))
-          this.isShow = false;
+        if((/^ *$/.test(this.selectedObject[target].selectedText)))
+        {
+          return false;
+        }
+        this.targetHtml = this.targetHtml.replace(this.selectedObject[target].selectedText, this.selectedHtml(target, this.selectedObject[target].selectedText, this.selectedObject[target].color));
+        return true;
+      },
+      onClick(targetIndex){
+        this.focusClass = targetIndex;
+        var target = this.targetClass[targetIndex];
+        if(this.selectedObject[target].isEdit){
+          if(targetIndex < this.targetClass.length)
+            var isSuccess = this.getSelectedText();
+          this.selectedObject[target].isEdit = false;
+          if(this.focusClass < this.targetClass.length - 1 && isSuccess){
+            this.focusClass += 1;
+            this.selectedObject[this.targetClass[this.focusClass]].isEdit = true;
+            this.currentSelectedText="";
+          }
+        }
+        else{
+          this.selectedObject[target].isEdit = true;
+        }
         this.$forceUpdate();
       },
+      onDeleteSelection(entityName){
+        this.targetHtml = this.targetHtml.replace(this.selectedHtml(entityName, this.selectedObject[entityName].selectedText, this.selectedObject[entityName].color), this.selectedObject[entityName].selectedText);
+        this.selectedObject[entityName].selectedText = "";
+        this.$forceUpdate();
+      },
+      setInitialSelection(){
+        var i;
+        var cnt = 0;
+        for(i of this.targetClass){
+          this.selectedObject[i] = {
+            selectedText:"",
+            color:this.colorClassList[cnt],
+            index: cnt++,
+            isEdit: false,
+          };
+        }
+        this.selectedObject[this.targetClass[0]].isEdit = true;
+      },
+      async queryTaskInfo(){
+        // loading page
+        let loader = this.$loading.show({
+          // Optional parameters
+          canCancel: true,
+          onCancel: this.onCancel,
+        });
+        //get all entitys
+        const response = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
+        {
+            taskId: "taskId02",
+            userId: "userId01",
+        });
+        console.log(response.data.data);
+        this.targetClass = response.data.data;
+        //get paragraph
+        const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
+        {
+            taskId: "taskId02",
+            taskType: "ner",
+            userId: "userId01",
+            labelCount: 1,
+        });
+        console.log(response2.data.data);
+        this.targetParagraph = response2.data.data.label.targetParagraph;
+        document.addEventListener('selectionchange',() => {
+            this.currentSelectedText = window.getSelection().toString();
+        });
+        this.targetHtml = this.selectableTexthtml;
+        document.addEventListener("click", function(event){
+          if(event.target.id != ""){
+            if ($(event.target).hasClass('selectedTextBlock')){
+              this.onDeleteSelection(event.target.id);
+            }
+          }
+        }.bind(this));
+        this.setInitialSelection();
+        loader.hide();
+      }
   },
   mounted() {
     const title = this.$route.meta.title;
     var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
     this.taskTitle = this.$route.query.taskTitle;
     this.$emit("setTitle", customTitle);
-
-    document.addEventListener('selectionchange',() => {
-        this.getSelectedText();
-    });
+    this.queryTaskInfo();
   }
 }
 
 </script>
 
-<style scoped>
+<style>
   .task-header {
     display: flex;
     justify-content: center;
-  }
-  .emph{
-    color:rgb(0,195,0)
   }
   .p1{
     color:rgb(82, 82, 82)
@@ -159,10 +269,7 @@ export default {
   .button-right {
     display: flex;
     justify-content: flex-end;
-    margin-top: 10px;
-    position: fixed;
-    bottom: 60px;
-    right:40px;
+    margin-top: 60px;
   }
   .selectableText {
     font-size: 20px;
@@ -182,7 +289,61 @@ export default {
     color: white;
     padding: 5px 10px;
     border-radius: 6px;
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin: 5px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.253),0 5px 6px 0 rgba(0, 0, 0, 0.137);
+    transition: 1s;
+  }
+  .focusButton{
+    background-color: rgb(0, 195, 0);
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin: 5px;
+    transition: 1s;
+  }
+  .focus{
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.589),0 5px 6px 0 rgba(0, 0, 0, 0.137);
+    filter: brightness(110%);
+    transition: 1s;
+  }
+  .displayBlock {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin: 15px;
+  }
+  .row-display{
+    display: flex;
+    align-items: center;
+  }
+  .blue{
+    background-color: rgb(185, 65, 255);
+  }
+  .red{
+    background-color: rgb(255, 78, 78);
+  }
+  .emph{
+    color: rgb(0, 195, 0);
+  }
+  .col1{
+    background-color: #66C7F4;
+  }
+  .col2{
+    background-color: #527cbb;
+  }
+  .col3{
+    background-color: #345995;
+  }
+  .col4{
+    background-color: #98A886;
+  }
+  .col5{
+    background-color: #023C40;
+  }
+  .col6{
+    background-color: #042A2B;
   }
 </style>
