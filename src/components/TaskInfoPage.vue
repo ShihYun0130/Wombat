@@ -94,6 +94,7 @@ export default {
     this.taskType=this.$route.query.type;
     console.log(this.taskId)
 
+    // LIFF login check
     if (!this.$store.state.isAuthenticated) {
       console.log('taskInfoPage dispatch')
       this.$router.push('/')
@@ -103,6 +104,10 @@ export default {
       this.userProfile = this.$store.state.userProfile
     }
 
+    const title = this.$route.meta.title
+    this.$emit("setTitle", title)
+    this.taskId=this.$route.query.id
+    console.log(this.taskId)
 
     // if (!liff.isLoggedIn()) {
     //   console.log('is not logged in in task-info')

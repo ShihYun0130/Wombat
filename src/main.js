@@ -10,7 +10,6 @@ import Vuex from 'vuex'
 import store from './store'
 import SweetAlertIcons from 'vue-sweetalert-icons';
 import Toasted from 'vue-toasted';
-// import liff from '@line/liff';
 
 Vue.use(Toasted, {
   position: 'bottom-center',

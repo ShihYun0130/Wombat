@@ -26,17 +26,17 @@ export default {
     }
   },
   mounted() {
-    const title = ' '
-    this.$emit("setTitle", title)
-
     if (!this.$store.state.isAuthenticated) {
-      console.log('taskSettingPage dispatch')
+      console.log('successPage dispatch')
       this.$router.push('/')
       // await this.$store.dispatch('getProfile')
     } else {
-      console.log('profile in taskSettingPage', this.$store.state.userProfile)
+      console.log('profile in successPage', this.$store.state.userProfile)
       this.userProfile = this.$store.state.userProfile
     }
+
+    const title = ' '
+    this.$emit("setTitle", title)
   }
 }
 </script>

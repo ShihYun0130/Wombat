@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-// import liff from '@line/liff';
 
 Vue.use(Vuex);
 

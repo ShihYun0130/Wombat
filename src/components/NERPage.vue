@@ -81,6 +81,7 @@ export default {
         targetHtml: "",
         colorList: ["#66C7F4", "#527cbb", "#345995", "#98A886", "#023C40", "#042A2B"],
         colorClassList: ["col1", "col2", "col3", "col4", "col5", "col6"],
+        userProfile: {}
     }
   },
   computed: {
@@ -233,6 +234,16 @@ export default {
       }
   },
   mounted() {
+    // LIFF login check
+    if (!this.$store.state.isAuthenticated) {
+      console.log('NERPage dispatch')
+      this.$router.push('/')
+      // await this.$store.dispatch('getProfile')
+    } else {
+      console.log('profile in NERPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
+
     const title = this.$route.meta.title;
     this.taskTitle = this.$route.query.taskTitle;
     this.taskId = this.$route.query.taskId;

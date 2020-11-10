@@ -97,6 +97,7 @@ export default {
   border-top-left-radius: 61px;
   box-shadow: 0 3px 6px rgb(0, 0, 0, 0.16);
   overflow: scroll;
+  -webkit-overflow-scrolling: touch
 }
 
 .slide-fade-enter {
@@ -127,6 +128,7 @@ export default {
 
   border: 10px solid white;
   box-shadow: 1px 5px 6px rgb(0, 0, 0, 0.16);
+  z-index: 10;
 }
 
 .profile-img > img {

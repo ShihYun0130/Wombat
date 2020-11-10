@@ -29,7 +29,7 @@
 
 <script>
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
-// import liff from '@line/liff';
+import liff from '@line/liff';
 
 export default {
   name: "ProfilePage",
@@ -75,20 +75,20 @@ export default {
       this.$router.push('/Tasks')
     }
   },
-  // LIFF login check
-  // async beforeCreate() {
-  //   console.log('Hook: beforeCreate');
-  //   await liff.init({ liffId: '1655218168-VQrDOZBE' });
-  //   if (!liff.isLoggedIn()) {
-  //     console.log('has not logged in, store')
-  //     liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
-  //     console.log('redirected back')
-  //   }
-  //   const userProfile = await liff.getProfile()
-  //   this.userProfile = userProfile
-  //   this.$store.commit('setProfile', userProfile)
-  //   console.log('liff init beforeCreate', userProfile)
-  // },
+  async beforeCreate() {
+    // LIFF login check
+    console.log('Hook: beforeCreate');
+    await liff.init({ liffId: '1655218168-VQrDOZBE' });
+    if (!liff.isLoggedIn()) {
+      console.log('has not logged in, store')
+      liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
+      console.log('redirected back')
+    }
+    const userProfile = await liff.getProfile()
+    this.userProfile = userProfile
+    this.$store.commit('setProfile', userProfile)
+    console.log('liff init beforeCreate', userProfile)
+  },
   async mounted() {
     const title = ''
     const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
@@ -110,14 +110,16 @@ body {
   margin: 0 !important;
 }
 #profilePage {
-  margin-top: 100px;
+  padding-top: 105px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: flex-start;
+  align-items: center;
 
-  height: 82%;
+  height: 100%;
+  min-height: 750px;
   overflow: scroll;
+  -webkit-overflow-scrolling: touch
 }
 
 .profile-name {
@@ -129,8 +131,8 @@ body {
 .profile-intro {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: flex-start;
+  align-items: center;
   width: 150px;
   margin-top: 20px;
 }
@@ -171,7 +173,7 @@ body {
 
   margin: 22px 0;
   width: 250px;
-  height: 40%;
+  height: 40px;
 }
 
 .task-middle {
@@ -207,7 +209,7 @@ body {
 
   box-shadow: 1px 3px 2px rgb(0, 0, 0, 0.13);
 
-  margin: 20px 0;
+  margin: 30px 0;
   padding: 14px 0;
 }
 

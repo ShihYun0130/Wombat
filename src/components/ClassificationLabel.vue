@@ -67,6 +67,7 @@ export default {
         taskId:"",
         taskType:"",
         isExample: false,
+        userProfile: {}
     }
   }, 
   computed: {
@@ -153,6 +154,16 @@ export default {
   mounted() {
     console.log('prevRoute', this.prevRoute);
 
+    // LIFF login check
+    if (!this.$store.state.isAuthenticated) {
+      console.log('classLabelPage dispatch')
+      this.$router.push('/')
+      // await this.$store.dispatch('getProfile')
+    } else {
+      console.log('profile in classLabelPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
+
     if (this.prevRoute === "TaskUploadPage") {
       this.isExample = true
       const title = this.$route.meta.title;
@@ -177,7 +188,7 @@ export default {
       this.$emit("setTitle", customTitle);
       this.queryTaskInfo();
     }
-    
+
     // this.selectedClass = "狗";
     // axios
     //   .get('https://www.runoob.com/try/ajax/json_demo.json')
