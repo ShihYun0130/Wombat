@@ -110,7 +110,7 @@ body {
   margin: 0 !important;
 }
 #profilePage {
-  padding-top: 105px;
+  padding-top: 100px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
