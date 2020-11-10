@@ -15,6 +15,11 @@
 <script>
 export default {
   name: "SuccessPage",
+  data() {
+    return {
+      userProfile: {}
+    }
+  },
   methods: {
     goToMyTask() {
       this.$router.push('/My-tasks')
@@ -23,6 +28,15 @@ export default {
   mounted() {
     const title = ' '
     this.$emit("setTitle", title)
+
+    if (!this.$store.state.isAuthenticated) {
+      console.log('taskSettingPage dispatch')
+      this.$router.push('/')
+      // await this.$store.dispatch('getProfile')
+    } else {
+      console.log('profile in taskSettingPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
   }
 }
 </script>

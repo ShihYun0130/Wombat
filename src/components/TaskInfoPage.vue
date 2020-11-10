@@ -50,6 +50,7 @@ import lineLogo from '../assets/icons/lineLogo.png'
 import ques from '../assets/ques.png'
 import ans from '../assets/ans.png'
 import shareIcon from '../assets/icons/shareIcon.png'
+// import liff from '@line/liff';
 
 export default {
   name: "TaskInfoPage",
@@ -71,6 +72,7 @@ export default {
       taskExAnsPic: '',
       taskId: '',
       taskType: '',
+      userProfile: {}
     }
   },
   methods: {
@@ -85,12 +87,31 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
     this.taskId=this.$route.query.id
     this.taskType=this.$route.query.type;
     console.log(this.taskId)
+
+    if (!this.$store.state.isAuthenticated) {
+      console.log('taskInfoPage dispatch')
+      this.$router.push('/')
+      // await this.$store.dispatch('getProfile')
+    } else {
+      console.log('profile in taskInfoPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
+
+
+    // if (!liff.isLoggedIn()) {
+    //   console.log('is not logged in in task-info')
+    //   this.$store.dispatch('liffLogin')
+    // } else if (!this.userProfile) {
+    //   await this.$store.dispatch('getProfile')
+    //   this.userProfile = this.$store.state.userProfile
+    //   console.log('is logged in in task info', this.$store.state.userProfile)
+    // }
   }
 }
 </script>

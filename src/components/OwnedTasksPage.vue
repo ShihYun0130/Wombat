@@ -21,7 +21,8 @@ export default {
     return {
       taskIcon: '',
       taskTitle: '範例任務',
-      company_default
+      company_default,
+      userProfile: {}
     }
   },
   mounted() {
@@ -29,6 +30,15 @@ export default {
     this.$emit("setTitle", title)
     this.taskIcon = this.$store.state.taskIcon
     this.taskTitle = this.$store.state.taskTitle
+
+    if (!this.$store.state.isAuthenticated) {
+      console.log('ownedTask dispatch')
+      this.$router.push('/')
+      // await this.$store.dispatch('getProfile')
+    } else {
+      console.log('profile in ownedTask', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
   }
 }
 </script>

@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import liff from '@line/liff';
+// import liff from '@line/liff';
 
 Vue.use(Vuex);
 
@@ -20,24 +20,36 @@ export default new Vuex.Store({
     labeledDataList: {},
     unlabeledDataList: [],
     sampleScreenshot: '',
+    isAuthenticated: false,
     userProfile: {}
   },
   actions: {
     onSelectImageListChange({ commit }, imageList) {
       commit("setSelectedImageListData", imageList)
     },
-    async login({ commit }) {
-      await liff.init({ liffId: '1655218168-VQrDOZBE' });
-      if (!liff.isLoggedIn()) {
-        console.log('liff login')
-        liff.login({ redirectUri: "https://line-label.herokuapp.com/" },)
-        // liff.init()
-        console.log('redirected back')
-      }
-      const userProfile = await liff.getProfile()
-      console.log('userProfile', userProfile)
-      commit('setProfile', userProfile)
-    }
+    // liffLogin({ commit }) {
+    //   console.log('liff login')
+    //   liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
+    //   // liff.init()
+    //   console.log('redirected back')
+    //   commit('setAuthentication', true)
+    // },
+    // async getProfile({ commit }) {
+    //   const userProfile = await liff.getProfile()
+    //   console.log('userProfile', userProfile)
+    //   commit('setProfile', userProfile)
+    // },
+    // async getProfile({ commit }) {
+    //   if (!liff.isLoggedIn()) {
+    //     console.log('has not logged in, store')
+    //     liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
+    //     console.log('redirected back')
+    //   } else if (!this.userProfile) {
+    //     const userProfile = await liff.getProfile()
+    //     console.log('userProfile', userProfile)
+    //     commit('setProfile', userProfile)
+    //   }
+    // }
   },
   mutations: {
     setSelectedImageListData(state, imageList) {
@@ -72,9 +84,17 @@ export default new Vuex.Store({
         state.sampleScreenshot = screenshot
       }
     },
+    setAuthentication(state, isAuthenticated) {
+      console.log('setAuthentication', isAuthenticated)
+      state.isAuthenticated = isAuthenticated
+    },
     setProfile(state, userProfile) {
       console.log('set profile', userProfile)
       state.userProfile = userProfile
+      state.isAuthenticated = true
+      if (!userProfile) {
+        state.isAuthenticated = false
+      }
     }
   },
   getters: {}

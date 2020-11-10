@@ -21,6 +21,7 @@
 <script>
 import Header from '../src/components/Header'
 import NavPage from '../src/components/NavPage'
+// import liff from '@line/liff';
 
 export default {
   name: 'App',
@@ -39,6 +40,7 @@ export default {
       isOpen: false,
       profileImgPath: '',
       isRouterAlive: true,
+      userProfile: {}
     }
   },
   methods: {
@@ -57,6 +59,19 @@ export default {
         this.isRouterAlive = true;
       });
     }
+  },
+  mounted() {
+    console.log('mounted in app')
+    // await liff.init({ liffId: '1655218168-VQrDOZBE' });
+
+    // if (!liff.isLoggedIn()) {
+    //   console.log('is not logged in')
+    //   this.$store.dispatch('liffLogin')
+    // } else if (!this.userProfile) {
+    //   await this.$store.dispatch('getProfile')
+    //   this.userProfile = this.$store.state.userProfile
+    //   console.log('is logged in', this.$store.state.userProfile)
+    // }
   }
 }
 </script>

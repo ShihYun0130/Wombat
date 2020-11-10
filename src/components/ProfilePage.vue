@@ -29,7 +29,7 @@
 
 <script>
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
-// import liff from '@line/liff';
+import liff from '@line/liff';
 
 export default {
   name: "ProfilePage",
@@ -65,7 +65,8 @@ export default {
         type: "輪廓標註",
         level: 0,
         levelPercentage: 0
-      }]
+      }],
+      userProfile: {}
     }
   },
   methods: {
@@ -74,15 +75,43 @@ export default {
       this.$router.push('/Tasks')
     }
   },
+  async beforeCreate() {
+    console.log('Hook: beforeCreate');
+    await liff.init({ liffId: '1655218168-VQrDOZBE' });
+    if (!liff.isLoggedIn()) {
+      console.log('has not logged in, store')
+      liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
+      console.log('redirected back')
+    }
+    const userProfile = await liff.getProfile()
+    this.userProfile = userProfile
+    this.$store.commit('setProfile', userProfile)
+    console.log('liff init beforeCreate', userProfile)
+  },
   async mounted() {
     // await liff.init({ liffId: '1655218168-VQrDOZBE' });
-    console.log('mounted')
     const title = ''
     const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
     this.$emit("setTitle", title)
     this.$emit("setProfilePic", imgPath)
 
-    console.log('profile in profile page', this.$store.state.userProfile)
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('profilePage dispatch')
+    //   await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in profilePage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
+
+    // console.log('profile in profile page', this.$store.state.userProfile)
+    // if (!liff.isLoggedIn()) {
+    //   console.log('is not logged in in profile')
+    //   this.$store.dispatch('liffLogin')
+    // } else if (!this.userProfile) {
+    //   await this.$store.dispatch('getProfile')
+    //   this.userProfile = this.$store.state.userProfile
+    //   console.log('is logged in in profile', this.$store.state.userProfile)
+    // }
     // LIFF get Profile
     // if (!liff.isLoggedIn()) {
     //   console.log('liff login')

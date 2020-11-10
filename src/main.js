@@ -12,8 +12,6 @@ import SweetAlertIcons from 'vue-sweetalert-icons';
 import Toasted from 'vue-toasted';
 // import liff from '@line/liff';
 
-// liff.init({ liffId: '1655218168-VQrDOZBE' });
-
 Vue.use(Toasted, {
   position: 'bottom-center',
   durations: 3000,
@@ -28,14 +26,6 @@ const router = new VueRouter({
   mode: 'history',
   routes
 });
-
-router.beforeEach(() => {
-  const isLoggedin = this.$store.state.userProfile
-  console.log('beforeEach', isLoggedin);
-  if (!isLoggedin) {
-    this.$store.dispatch('login')
-  }
-})
 
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
