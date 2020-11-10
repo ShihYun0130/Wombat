@@ -29,6 +29,7 @@
 
 <script>
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
+// import liff from '@line/liff';
 
 export default {
   name: "ProfilePage",
@@ -73,16 +74,43 @@ export default {
       this.$router.push('/Tasks')
     }
   },
-  mounted() {
+  async mounted() {
+    // await liff.init({ liffId: '1655218168-VQrDOZBE' });
+    console.log('mounted')
     const title = ''
     const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
     this.$emit("setTitle", title)
     this.$emit("setProfilePic", imgPath)
+
+    console.log('profile in profile page', this.$store.state.userProfile)
+    // LIFF get Profile
+    // if (!liff.isLoggedIn()) {
+    //   console.log('liff login')
+    //   liff.login({ redirectUri: "https://line-label.herokuapp.com/" }, )
+    //   // liff.init()
+    //   console.log('redirected back')
+    // } 
+    // console.log("is loggedin")
+
+    // await liff.getProfile()
+    // await liff.getAccessToken()
+    // console.log('getProfile', await liff.getProfile())
+
   }
 }
 </script>
 
 <style>
+* {
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */      
+}
+body {
+  background: rgb(246, 246, 246)!important;
+  margin: 0 !important;
+}
 #profilePage {
   margin-top: 100px;
   display: flex;

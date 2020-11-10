@@ -9,8 +9,11 @@
     <div class="white-back">
       <router-view @setTitle="setTitle" @setProfilePic="setProfileImgPath" v-if="isRouterAlive"></router-view>
     </div>
+    <!-- <div :class="{ 'app-nav-show': isOpen, 'app-nav-hide': !isOpen }">
+      <NavPage v-if="isOpen" @closeNav="openAndCloseNav" />
+    </div> -->
     <transition name="slide-fade">
-      <nav-page v-if="isOpen" @closeNav="openAndCloseNav" />
+      <NavPage v-if="isOpen" @closeNav="openAndCloseNav" />
     </transition>
   </div>
 </template>
@@ -59,12 +62,6 @@ export default {
 </script>
 
 <style>
-* {
-  -webkit-user-select: none;  /* Chrome all / Safari all */
-  -moz-user-select: none;     /* Firefox all */
-  -ms-user-select: none;      /* IE 10+ */
-  user-select: none;          /* Likely future */      
-}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -87,20 +84,18 @@ export default {
   overflow: scroll;
 }
 
-body {
-  background: rgb(246, 246, 246)!important;
+.slide-fade-enter {
+  transform: translateX(-100%);
+  opacity: 0;
 }
-
-body { margin: 0 !important; }
-
 .slide-fade-enter-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   opacity: 30%;
 }
 .slide-fade-leave-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
-.slide-fade-enter, .slide-fade-leave-to {
+.slide-fade-leave-to {
   transform: translateX(-100%);
   opacity: 0;
 }
@@ -125,6 +120,5 @@ body { margin: 0 !important; }
   height: 100%;
   width: auto;
 }
-
 
 </style>

@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     openNav() {
+      console.log('open navigation')
       this.$emit("openNav")
     }
   }

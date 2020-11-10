@@ -44,6 +44,13 @@ export default {
       this.$emit("closeNav")
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      console.log('nextTick')
+      document.getElementById('navPage').style.opacity = '95%'
+      document.getElementsByClassName('crossIcon')[0].style.opacity = '60%'
+    })
+  }
 }
 </script>
 
@@ -66,20 +73,13 @@ export default {
 
 .crossIcon {
   width: 20px;
-  margin: 25px;
+  margin: 45px;
 
   opacity: 60%;
 }
 
 .navs {
   margin-top: 100px;
-}
-@keyframes fade-in { 
-  from { 
-    opacity: 0; 
-  } to { 
-    opacity: 1; 
-  } 
 }
 
 .nav {
