@@ -178,22 +178,13 @@ export default {
     this.$emit("setTitle", title)
     console.log('screenshot', this.$store.state.sampleScreenshot)
 
-    if (!this.$store.state.isAuthenticated) {
-      console.log('taskSettingPage dispatch')
-      this.$router.push('/')
-      // await this.$store.dispatch('getProfile')
-    } else {
-      console.log('profile in taskSettingPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
-    }
-
-    // if (!liff.isLoggedIn()) {
-    //   console.log('is not logged in task setting')
-    //   this.$store.dispatch('liffLogin')
-    // } else if (!this.userProfile) {
-    //   await this.$store.dispatch('getProfile')
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('taskSettingPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in taskSettingPage', this.$store.state.userProfile)
     //   this.userProfile = this.$store.state.userProfile
-    //   console.log('is logged in in task setting', this.$store.state.userProfile)
     // }
   }
 }

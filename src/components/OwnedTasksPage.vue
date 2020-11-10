@@ -31,14 +31,15 @@ export default {
     this.taskIcon = this.$store.state.taskIcon
     this.taskTitle = this.$store.state.taskTitle
 
-    if (!this.$store.state.isAuthenticated) {
-      console.log('ownedTask dispatch')
-      this.$router.push('/')
-      // await this.$store.dispatch('getProfile')
-    } else {
-      console.log('profile in ownedTask', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
-    }
+    // LIFF login check
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('ownedTask dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in ownedTask', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
   }
 }
 </script>

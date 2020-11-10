@@ -32,15 +32,15 @@ export default {
       this.$emit("closeNav")
     },
     routeToProfile() {
-      this.$router.push({ name: "profile" })
+      this.$router.push('Profile')
       this.$emit("closeNav")
     },
     routeToTask() {
-      this.$router.push({ name: "tasks" })
+      this.$router.push('/Tasks')
       this.$emit("closeNav")
     },
     routeToTaskUpload() {
-      this.$router.push({ name: "TaskUploadPage" })
+      this.$router.push('/Task-setting')
       this.$emit("closeNav")
     }
   },

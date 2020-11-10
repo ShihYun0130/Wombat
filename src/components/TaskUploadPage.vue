@@ -13,7 +13,7 @@
             <div class="reset-button category-number-button f14" :class="{ isClicked: !isCheck }" @click="resetCategoryNum">重設</div>
           </div>
         </div>
-        <div class="hint-text" v-if="!isNum">請輸入一個大於 0 的數字</div>
+        <div class="hint-text" v-if="!isNum">請輸入一個小於 10 的數字</div>
     <!-- </div> -->
 
     <div class="align-start-column text-left w100 mt20" v-if="isCheck">
@@ -79,7 +79,7 @@ export default {
   methods: {
     checkCategoryNum() {
       if (this.isCheck) return
-      if (this.categoryNum === 0 || parseFloat(this.categoryNum).toString() == "NaN") {
+      if (this.categoryNum === 0 || this.categoryNum > 10 || parseFloat(this.categoryNum).toString() == "NaN") {
         this.isNum = false
         return
       }
@@ -205,6 +205,13 @@ export default {
   align-items: flex-start;
   margin: 35px;
   flex-wrap: wrap;
+}
+input, input:before, input:after {
+  -webkit-user-select: initial!important;
+  -khtml-user-select: initial!important;
+  -moz-user-select: initial!important;
+  -ms-user-select: initial!important;
+  user-select: initial!important;
 }
 .isClicked {
   filter: brightness(70%);

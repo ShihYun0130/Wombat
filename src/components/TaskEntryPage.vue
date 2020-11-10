@@ -88,14 +88,15 @@ export default {
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
 
-    if (!this.$store.state.isAuthenticated) {
-      console.log('taskEntryPage dispatch')
-      this.$router.push('/')
-      // await this.$store.dispatch('getProfile')
-    } else {
-      console.log('profile in taskEntryPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
-    }
+    // LIFF login check
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('taskEntryPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in taskEntryPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
   }
 }
 </script>
