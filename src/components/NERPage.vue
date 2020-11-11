@@ -27,12 +27,19 @@
     </div>
     <div style="width: 100%;">
       <div class="button-right">
-        <button class="btn-lg" type="submit" @click="onSubmitAns">下一題
+        <button v-if="currentPage < totalPage" class="btn-lg" type="submit" @click="onSubmitAns(taskType, taskId, taskTitle, currentPage+1, totalPage)">下一題
         <span style="margin-left:6px; margin-top:-2px">
           <i class="inner-button-icon">
             <img src="../assets/icons/arrow_circle_down-24px.svg">
           </i>
         </span>
+        </button>
+        <button v-if="currentPage == totalPage" class="btn-lg red" type="submit" @click="onSubmitAns(taskType, taskId, taskTitle, currentPage+1, totalPage)">上傳答案
+          <span style="margin-left:6px; margin-top:-2px">
+            <i class="inner-button-icon">
+              <img src="../assets/icons/arrow_circle_down-24px.svg">
+            </i>
+          </span>
         </button>
       </div>
     </div>
@@ -53,6 +60,7 @@ Vue.use(Loading);
 
 export default {
   name: 'NERTaskPage',
+  inject: ["reload"],
   props: {
     msg: String,
   },
@@ -62,10 +70,13 @@ export default {
         focusClass: 0,
         selectedObject:{},
         currentSelectedText:"",
-        currentPage:1,
-        totalPage:10,
+        currentPage:0,
+        totalPage:0,
+        taskType: "",
+        taskId: "",
         taskTitle: "",
         selectedText: "",
+        labelId:"",
         targetParagraph: "",
         targetHtml: "",
         colorList: ["#66C7F4", "#527cbb", "#345995", "#98A886", "#023C40", "#042A2B"],
@@ -85,19 +96,28 @@ export default {
         taskType: "ner",
         userId: "userId01",
         taskId: "taskId02",
-        labelId: "labelId01",
+        labelId: this.labelId,
         NERObject: ans,
       };
     }
   },
   methods: {
-      onSubmitAns(){
+      onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
+        this.$store.commit('pushToAnswerIdList', this.labelId);
         axios
         .post('http://140.112.107.210:8000/saveAnswer', this.output)
         .then(response => console.log(response))
         .catch(function (error) { 
           console.log(error);
         });
+
+        if(currentPage <= totalPage){
+          this.$router.push({ path: '/NERTaskPage', query: { taskType, taskId, taskTitle, currentPage, totalPage}})
+          this.reload();
+        }
+        else{
+          this.$router.push({ path: '/Label-result', query: { taskType, taskId, taskTitle}})
+        }
       },
       selectedHtml: function(entityName, selectedText, entityClass) {
         return `<button class='selectedTextBlock ${entityClass}' id="${entityName}"> ${selectedText} </button>`
@@ -175,11 +195,12 @@ export default {
           // Optional parameters
           canCancel: true,
           onCancel: this.onCancel,
+          opacity: 1,
         });
         //get all entitys
         const response = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
         {
-            taskId: "taskId02",
+            taskId: this.taskId,
             userId: "userId01",
         });
         console.log(response.data.data);
@@ -187,13 +208,15 @@ export default {
         //get paragraph
         const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
         {
-            taskId: "taskId02",
+            taskId: this.taskId,
             taskType: "ner",
             userId: "userId01",
             labelCount: 1,
         });
         console.log(response2.data.data);
+        this.labelId = response2.data.data.label.labelId;
         this.targetParagraph = response2.data.data.label.targetParagraph;
+        console.log("labelId",this.labelId);
         document.addEventListener('selectionchange',() => {
             this.currentSelectedText = window.getSelection().toString();
         });
@@ -211,8 +234,12 @@ export default {
   },
   mounted() {
     const title = this.$route.meta.title;
-    var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
     this.taskTitle = this.$route.query.taskTitle;
+    this.taskId = this.$route.query.taskId;
+    this.taskType = this.$route.query.taskType;
+    this.currentPage = parseInt(this.$route.query.currentPage);
+    this.totalPage = parseInt(this.$route.query.totalPage);
+    var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
     this.$emit("setTitle", customTitle);
     this.queryTaskInfo();
   }

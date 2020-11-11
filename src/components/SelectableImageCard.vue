@@ -3,11 +3,11 @@
     <ul :class="`${rootClass}__container`">
       <li v-for="(imgList, index) in dataImagesLocal" :key="index" :class="`${rootClass}__item`">
         <div
-          :class="classThumbnailMultiple(imgList.id, imgList.disabled)"
+          :class="classThumbnailMultiple(imgList.labelId, imgList.disabled)"
           @click="onSelectMultipleImage(imgList)">
           <img
-            :src="imgList.src"
-            :id="imgList.id"
+            :src="imgList.imagePath"
+            :id="imgList.labelId"
             :height="h"
             :width="w"
             :class="`${rootClass}__img`"/>
@@ -60,7 +60,6 @@ export default {
       type: Number,
       default: 0
     },
-    rows: Number,
   },
   data() {
     return {
@@ -97,7 +96,7 @@ export default {
     },
     isExistInArray(id) {
       return this.multipleSelected.find(item => {
-        return id === item.id;
+        return id === item.labelId;
       });
     },
     removeFromSingleSelected() {
@@ -106,7 +105,7 @@ export default {
     },
     removeFromMultipleSelected(id, dontFireEmit) {
       this.multipleSelected = this.multipleSelected.filter(item => {
-        return id !== item.id;
+        return id !== item.labelId;
       });
       if (!dontFireEmit) {
         this.$emit("onselectmultipleimage", this.multipleSelected);
@@ -117,7 +116,7 @@ export default {
     },
     onSelectMultipleImage(objectImage) {
       if (!objectImage.disabled) {
-        if (!this.isExistInArray(objectImage.id)) {
+        if (!this.isExistInArray(objectImage.labelId)) {
           if (this.limit > 0) {
             if (this.multipleSelected.length < this.limit) {
               this.multipleSelected.push(objectImage);
@@ -131,7 +130,7 @@ export default {
             this.onSelectImageListChange(this.multipleSelected);
           }
         } else {
-          this.removeFromMultipleSelected(objectImage.id, true);
+          this.removeFromMultipleSelected(objectImage.labelId, true);
           this.$emit("onselectmultipleimage", this.multipleSelected);
         }
       }

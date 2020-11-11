@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div class="start-task-button" @click="startTask(taskId, taskTitle)">
+    <div class="start-task-button" @click="startTask(taskId, taskTitle, taskType)">
       <div class="white-text f26 bold-text">開始任務</div>
     </div>
   </div>
@@ -69,17 +69,26 @@ export default {
       taskExAnswerHint: "您應該點擊選擇:",
       taskExAnsPic: '',
       taskId: '',
+      taskType: '',
     }
   },
   methods: {
-    startTask(id, taskTitle) {
-      this.$router.push({ path: '/NERTaskPage', query: { id, taskTitle}})
+    startTask(taskId, taskTitle, taskType) {
+      var currentPage = 1;
+      var totalPage = 1;
+      if(this.taskType == 'imageLabel'){
+        this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage } });
+      }
+      else{
+        this.$router.push({ path: '/NERTaskPage', query: { taskType, taskId, taskTitle, currentPage, totalPage } });
+      }
     }
   },
   mounted() {
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
     this.taskId=this.$route.query.id
+    this.taskType=this.$route.query.type;
     console.log(this.taskId)
   }
 }

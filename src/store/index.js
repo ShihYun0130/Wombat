@@ -15,6 +15,7 @@ export default new Vuex.Store({
       taskDescription: '',
       taskPayRule: '',
       taskLeastPayLimitPage: '',
+      answerIdList: [],
     },
     actions:{
       onSelectImageListChange({commit}, imageList) {
@@ -36,6 +37,9 @@ export default new Vuex.Store({
         state.taskDescription = taskInfo.taskDescription
         state.taskPayRule = taskInfo.taskPayRule
         state.taskLeastPayLimitPage = taskInfo.taskLeastPayLimitPage
+      },
+      pushToAnswerIdList(state, answerId) {
+        state.answerIdList.push(answerId);
       }
     },
     getters:{}

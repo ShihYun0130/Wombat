@@ -1,5 +1,7 @@
   .SelectableImageCard__container{
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     width: 95%;
     margin: auto;
@@ -8,11 +10,12 @@
   .SelectableImageCard__item {
     margin: 0px 12px 12px 0px;
     display: flex;
+    width: 40%;
   }
   
   .SelectableImageCard__thumbnail{
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     cursor: pointer;
     padding: 6px;
     border: 1px solid #dddddd;
@@ -38,7 +41,7 @@
   }
   
   .SelectableImageCard__thumbnail--selected{
-    background: #0088cc;
+    background: rgb(0,195,0);
   }
   
   .SelectableImageCard__thumbnail--disabled{
