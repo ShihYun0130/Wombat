@@ -16,10 +16,10 @@
         <span class="emph">{{selectedClass}}</span>
         <span>?</span>
     </div>
-    <SelectableImageCard :imgList="imgList" :rows="2"/>
+    <SelectableImageCard :imgList="labelList"/>
     <div style="width: 100%;">
       <div class="button-right">
-        <button class="btn-lg" type="submit" @click="onSubmitAns">下一題
+        <button class="btn-lg" type="submit" @click="onSubmitAns(taskType, taskId, taskTitle, currentPage+1, totalPage)">下一題
         <span style="margin-left:6px; margin-top:-2px;">
           <i class="inner-button-icon">
             <img src="../assets/icons/arrow_circle_down-24px.svg">
@@ -39,6 +39,7 @@ import axios from "axios"
 
 export default {
   name: 'Classification',
+  inject: ["reload"],
   components: {
     SelectableImageCard
   },
@@ -47,47 +48,93 @@ export default {
   },
   data: function(){
     return{
-        imgList:[
-            {src:("https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/75576600_3078766742150594_1763162161808408576_o.jpg?_nc_cat=104&ccb=2&_nc_sid=09cbfe&_nc_ohc=z8GKpxc9iF0AX_QETVm&_nc_ht=scontent-tpe1-1.xx&oh=d061df47afe67c97875fe7dc91be332d&oe=5FC1E554"), id:"1"},
-            {src:("https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/75576600_3078766742150594_1763162161808408576_o.jpg?_nc_cat=104&ccb=2&_nc_sid=09cbfe&_nc_ohc=z8GKpxc9iF0AX_QETVm&_nc_ht=scontent-tpe1-1.xx&oh=d061df47afe67c97875fe7dc91be332d&oe=5FC1E554"), id:"2"},
-        ],
-        selectedClass:'狗',
-        rows:2,
-        currentPage:1,
-        totalPage:10,
+        targetClass: [],
+        selectedClass:"",
+        currentPage:0,
+        totalPage:0,
         taskTitle: "",
+        labelList:[],
+        taskId:"",
+        taskType:"",
     }
-  }, methods: {
-    onSubmitAns(){
+  }, 
+  computed: {
+    args: function() {
       const selectedList = this.$store.state.selectImageList;
       var parsedobj = JSON.parse(JSON.stringify(selectedList));
-      console.log(parsedobj);
-      // console.log(selectedList);
-      axios
-      .post('http://140.112.107.210:8000/saveAnswer',{
+      var output = [];
+      for(var item of parsedobj){
+        output.push(item.labelId);
+        this.$store.commit('pushToAnswerIdList', item.labelId);
+      }
+      return {
         userId: "",
-        classification: "狗",
-        answer_picture: parsedobj,
-        taskId: "1"
-      })
+        classification: this.selectedClass,
+        labelIdList: output,
+        taskId: this.taskId
+      };
+    }
+  },
+  methods: {
+    onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
+      console.log(this.args);
+      axios
+      .post('http://140.112.107.210:8000/saveAnswer',this.args)
       .then(response => console.log(response))
       .catch(function (error) { 
         console.log(error);
       });
+
+      if(currentPage <= totalPage){
+        this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage}})
+        this.reload();
+      }
+      else{
+        this.$router.push({ path: '/Label-result', query: { taskType, taskId, taskTitle}})
+      }
+    },
+    async queryTaskInfo(){
+      // loading page
+      let loader = this.$loading.show({
+        // Optional parameters
+        canCancel: true,
+        onCancel: this.onCancel,
+      });
+      //get all class
+      const response = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
+      {
+          taskId: this.taskId,
+          userId: "userId01",
+      });
+      // console.log(response.data.data);
+      this.targetClass = response.data.data;
+      //get paragraph
+      const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
+      {
+          taskId: this.taskId,
+          taskType: "classification",
+          userId: "userId01",
+          labelCount: 2,
+      });
+      // console.log(response2.data.data);
+      // this.labelId = response2.data.data.label.labelId;
+      this.labelList = response2.data.data.labelList;
+      console.log(this.labelList);
+      // console.log("labelId",this.labelId);
+      this.selectedClass = this.targetClass[this.currentPage];
+      loader.hide();
     }
   },
   mounted() {
     const title = this.$route.meta.title;
-    var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
+    this.taskType = this.$route.query.taskType;
     this.taskTitle = this.$route.query.taskTitle;
+    this.taskId = this.$route.query.taskId;
+    this.currentPage = parseInt(this.$route.query.currentPage);
+    this.totalPage = parseInt(this.$route.query.totalPage);
+    var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
     this.$emit("setTitle", customTitle);
-    // this.selectedClass = "狗";
-    // axios
-    //   .get('https://www.runoob.com/try/ajax/json_demo.json')
-    //   .then(response => (this.SelectedClass = response))
-    //   .catch(function (error) { 
-    //     console.log(error);
-    //   });
+    this.queryTaskInfo();
   }
 }
 

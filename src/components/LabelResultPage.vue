@@ -4,7 +4,7 @@
     <div class="grey-text f20 mt18"><span class="green-text f20">{{taskTitle}}</span>任務</div>
     <div class="progress-circle-container mt36">
       <v-progress-circular
-        :rotate="300"
+        :rotate="-90"
         :size="185"
         :width="16"
         :value="accuracy"
@@ -12,7 +12,7 @@
         >
         <v-col v-show="true">
           <div class="white-grey-text bold-text f20">精準度</div>
-        <div class="green-text f36">{{accuracy}}%</div>
+        <div class="green-text f36">{{accuracy.toFixed(1)}}%</div>
         </v-col>
       </v-progress-circular>
       <div class="small-circle" v-show="true"></div>
@@ -23,7 +23,7 @@
     <div class="space-between-row w80 mt28">
       <img class="w58" :src="imageLabelIcon" />
       <div class="w100px text-left">
-        <div class="grey-text f20">{{taskType}}</div>
+        <div class="grey-text f20">{{taskCategory}}</div>
         <div class="result-task-progress mt5">
           <b-progress :value="taskLevelPercentage" height="9px" variant="success"></b-progress>
         </div>
@@ -34,9 +34,9 @@
     <div class="dark-grey bold-text f24 mt48">請對這項任務進行評價</div>
     <div class="mt8">
       <star-rating 
-        star-size="30"
-        rounded-corners="true"
-        padding="1"
+        star-size=30
+        rounded-corners=true
+        padding=1
         inactive-color="rgb(219, 219, 219)"
         :show-rating="false"
       />
@@ -54,6 +54,8 @@
 import imageLabelIcon from '../assets/icons/classification.png'
 import StarRating from 'vue-star-rating'
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
+import axios from "axios"
+
 
 export default {
   name: "LabelResultPage",
@@ -64,23 +66,60 @@ export default {
     return {
       imageLabelIcon,
       dashboardIcon,
-      taskType: "分類型",
-      accuracy: 90,
-      expValue: 34,
-      taskLevelPercentage: 40,
-      taskLevel: 2,
-      taskTitle: "手寫數字圖片分類"
+      taskType: "",
+      taskCategory: "分類型",
+      accuracy: 0,
+      expValue: 0,
+      taskLevelPercentage: 0,
+      taskLevel: 1,
+      taskId: "",
+      taskTitle: "",
+    }
+  },
+  computed: {
+    args: function() {
+                // labelIdList: this.$store.state.answerIdList
+      return {
+          taskId: this.taskId,
+          userId: "userId01",
+          taskType: "ner",
+          labelIdList: this.$store.state.answerIdList
+      }
     }
   },
   methods: {
     goToTaskPage() {
       console.log('gototask')
       this.$router.push('/Tasks')
+    },
+    async initialResult() {
+      // loading page
+      let loader = this.$loading.show({
+        // Optional parameters
+        canCancel: true,
+        onCancel: this.onCancel,
+      });
+      console.log(this.args);
+      //get all entitys
+      const response = await axios.post('http://140.112.107.210:8000/accuracy', this.args);
+      console.log(response);
+      if(response.data.success){
+        var result = response.data.data;
+        this.accuracy = result.accuracy * 100;
+        this.taskLevelPercentage = result.levelPercentage;
+        this.expValue = result.taskExpValue;
+      }
+      loader.hide();
     }
   },
   mounted() {
     const title = this.$route.meta.title
     this.$emit('setTitle', title)
+    this.taskType = this.$route.query.taskType;
+    this.taskId = this.$route.query.taskId;
+    this.taskTitle = this.$route.query.taskTitle;
+    console.log(this.taskType);
+    this.initialResult();
   }
 }
 </script>

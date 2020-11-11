@@ -7,7 +7,7 @@
 
     <Header :title="title" @openNav="openAndCloseNav" />
     <div class="white-back">
-      <router-view @setTitle="setTitle" @setProfilePic="setProfileImgPath" ></router-view>
+      <router-view @setTitle="setTitle" @setProfilePic="setProfileImgPath" v-if="isRouterAlive"></router-view>
     </div>
     <transition name="slide-fade">
       <nav-page v-if="isOpen" @closeNav="openAndCloseNav" />
@@ -25,11 +25,17 @@ export default {
     Header,
     NavPage
   },
+  provide() {
+    return {
+      reload: this.reload
+    };
+  }, 
   data () {
     return {
       title: '',
       isOpen: false,
-      profileImgPath: ''
+      profileImgPath: '',
+      isRouterAlive: true,
     }
   },
   methods: {
@@ -41,6 +47,12 @@ export default {
     },
     setProfileImgPath(imgPath) {
       this.profileImgPath = imgPath
+    },
+    reload() {
+      this.isRouterAlive = false;
+      this.$nextTick(() => {
+        this.isRouterAlive = true;
+      });
     }
   }
 }

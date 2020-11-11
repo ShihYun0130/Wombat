@@ -3,7 +3,7 @@
     <div class="task-page-info"> 請從下方選擇任務點擊進入 </div>
     <div class="horizontal-line"></div>
     <div class="task-list-container">
-      <div v-for="task in allTaskList" :key="task.id" class="task-item" @click="goToDetailPage(task.id)">
+      <div v-for="task in allTaskList" :key="task.id" class="task-item" @click="goToDetailPage(task.id, task.type)">
         <div v-if="task.type == 'imageLabel'" class="task-list-img-icon"></div>
         <div v-else class="task-list-text-icon"></div>
         <div class="task-list-right">
@@ -24,52 +24,52 @@ export default {
   data() {
     return {
       allTaskList: [{
-        id: '1',
+        id: 'taskId01',
         type: "imageLabel",
         title: "CLAS - 手寫數字圖片分類",
         owner: "LINE CORP."
       }, {
-        id: '2',
+        id: 'taskId01',
         type: "imageLabel",
         title: "CLAS - 毛毛蟲圖片分類",
         owner: "LINE CORP."
       }, {
-        id: '3',
+        id: 'taskId01',
         type: "imageLabel",
         title: "CLAS - 鳶尾花圖片分類",
         owner: "LINE CORP."
       }, {
-        id: '4',
+        id: 'taskId01',
         type: "imageLabel",
         title: "CLAS - 水草圖片分類",
         owner: "LINE CORP."
       }, {
-        id: '5',
+        id: 'taskId02',
         type: "textLabel",
         title: "NER - 電台廣播語料庫",
         owner: "北科大教育廣播電台"
       }, {
-        id: '6',
+        id: 'taskId02',
         type: "textLabel",
         title: "NER - 台語語音語料庫",
         owner: "北科大教育廣播電台"
       }, {
-        id: '7',
+        id: 'taskId02',
         type: "textLabel",
         title: "NER - 地區用語關聯庫",
         owner: "台大社會所"
       }, {
-        id: '8',
+        id: 'taskId02',
         type: "textLabel",
         title: "NER - 電台廣播語料庫",
         owner: "北科大教育廣播電台"
       }, {
-        id: '9',
+        id: 'taskId02',
         type: "textLabel",
         title: "NER - 台語語音語料庫",
         owner: "北科大教育廣播電台"
       }, {
-        id: '10',
+        id: 'taskId02',
         type: "textLabel",
         title: "NER - 地區用語關聯庫",
         owner: "台大社會所"
@@ -79,8 +79,8 @@ export default {
     }
   },
   methods: {
-    goToDetailPage(id) {
-      this.$router.push({ path: '/Task-info', query: { id }})
+    goToDetailPage(id, type) {
+      this.$router.push({ path: '/Task-info', query: { id , type}})
     }
   },
   mounted() {
