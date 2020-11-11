@@ -168,8 +168,6 @@ export default {
         unlabeledDataList: unlabeledList
       })
 
-      this.$router.push('/classificationLabel')
-
       // TODO: Call add task api
 
       // const taskData = {
@@ -184,11 +182,12 @@ export default {
       //   leastPayLimitPage: this.$store.state.taskLeastPayLimitPage,
       //   labeledDataList: this.$store.state.labeledStringList,
       //   unlabeledDataList: this.$store.state.unLabeledStringList,
-
       // }
       
       // const res = await axios.post('http://140.112.107.210:8000/task/addTask')
       // console.log('res', res)
+
+      this.$router.push('/classificationLabel')
     }
   },
   mounted() {

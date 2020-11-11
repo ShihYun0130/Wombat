@@ -29,7 +29,7 @@
 
 <script>
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
-import liff from '@line/liff';
+// import liff from '@line/liff';
 
 export default {
   name: "ProfilePage",
@@ -75,21 +75,21 @@ export default {
       this.$router.push('/Tasks')
     }
   },
-  async beforeCreate() {
-    // LIFF login check
-    console.log('Hook: beforeCreate');
-    await liff.init({ liffId: '1655218168-VQrDOZBE' });
-    if (!liff.isLoggedIn()) {
-      console.log('has not logged in, store')
-      liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
-      console.log('redirected back')
-    }
-    const userProfile = await liff.getProfile()
-    this.userProfile = userProfile
-    this.$store.commit('setProfile', userProfile)
-    console.log('liff init beforeCreate', userProfile)
-    this.$emit("setProfilePic", userProfile.pictureUrl)
-  },
+  // async beforeCreate() {
+  //   // LIFF login check
+  //   console.log('Hook: beforeCreate');
+  //   await liff.init({ liffId: '1655218168-VQrDOZBE' });
+  //   if (!liff.isLoggedIn()) {
+  //     console.log('has not logged in, store')
+  //     liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
+  //     console.log('redirected back')
+  //   }
+  //   const userProfile = await liff.getProfile()
+  //   this.userProfile = userProfile
+  //   this.$store.commit('setProfile', userProfile)
+  //   console.log('liff init beforeCreate', userProfile)
+  //   this.$emit("setProfilePic", userProfile.pictureUrl)
+  // },
   async mounted() {
     const title = ''
     // const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
