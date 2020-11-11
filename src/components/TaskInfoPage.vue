@@ -94,6 +94,8 @@ export default {
     this.taskType=this.$route.query.type;
     console.log(this.taskId)
 
+    console.log('mounted profile in task info', this.$store.state.userProfile)
+
     // // LIFF login check
     // if (!this.$store.state.isAuthenticated) {
     //   console.log('taskInfoPage dispatch')

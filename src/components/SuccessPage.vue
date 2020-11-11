@@ -13,8 +13,11 @@
 </template>
 
 <script>
+import SweetalertIcon from 'vue-sweetalert-icons';
+
 export default {
   name: "SuccessPage",
+  components: { SweetalertIcon },
   data() {
     return {
       userProfile: {}
@@ -42,7 +45,7 @@ export default {
 </script>
 
 <style>
-.success-page {
+#success-page {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

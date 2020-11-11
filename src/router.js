@@ -9,6 +9,7 @@ import TaskSettingPage from './components/TaskSettingPage'
 import TaskExamplePage from './components/TaskExamplePage'
 import TaskUploadPage from './components/TaskUploadPage'
 import SuccessPage from './components/SuccessPage'
+import FailedPage from './components/FailedPage'
 import OwnedTasksPage from './components/OwnedTasksPage'
 
 const routes = [
@@ -88,10 +89,12 @@ const routes = [
   {
     name: "SuccessPage",
     path: '/Success',
-    component: SuccessPage,
-    meta: {
-      title: '建立成功'
-    }
+    component: SuccessPage
+  },
+  {
+    name: "FailedPage",
+    path: '/Failed',
+    component: FailedPage
   },
   {
     name: "OwnedTasksPage",
