@@ -18,6 +18,7 @@ export default new Vuex.Store({
     taskLeastPayLimitPage: '',
     labeledDataList: {},
     unlabeledDataList: [],
+    sampleScreenshotOne: '',
     sampleScreenshot: '',
     isAuthenticated: false,
     userProfile: {}
@@ -73,6 +74,10 @@ export default new Vuex.Store({
       console.log('labelData', labelData);
       state.labeledDataList = labelData.labeledDataList
       state.unlabeledDataList = labelData.unlabeledDataList
+    },
+    setSampleScreenshotOne(state, screenshot) {
+      console.log('screenshot one', screenshot)
+      state.sampleScreenshotOne = screenshot
     },
     setSampleScreenshot(state, screenshot) {
       console.log('screenshot', screenshot)

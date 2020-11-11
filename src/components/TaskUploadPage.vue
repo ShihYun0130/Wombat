@@ -58,7 +58,6 @@
 </template>
 
 <script>
-// import axios from 'axios'
 export default {
   name: "TaskUploadPage",
   data() {
@@ -123,7 +122,7 @@ export default {
             this.multiplePreview.push(e.target.result);
           }
           this.multipleImage.push(input.files[index]);
-          reader.readAsDataURL(input.files[index])
+          reader.readAsDataURL(input.files[index]);
           index ++;
         }
       }

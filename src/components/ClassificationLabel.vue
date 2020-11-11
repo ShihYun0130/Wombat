@@ -120,7 +120,6 @@ export default {
       });
       // console.log(response.data.data);
       this.targetClass = response.data.data;
-      //get paragraph
       const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
       {
           taskId: this.taskId,
@@ -141,9 +140,9 @@ export default {
         console.log('canvas', canvas.toDataURL())
         const base64String = canvas.toDataURL()
         this.$store.commit('setSampleScreenshot', base64String)
-        // document.getElementById('screenshot').appendChild(canvas)
+        this.$router.push('/Task-example')
       });
-      this.$router.push('/Task-example')
+      
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -176,6 +175,13 @@ export default {
       this.labelList.push({ 
         imagePath: this.$store.state.unlabeledDataList[0],
         labelId: 1
+      })
+      this.$nextTick(() => {
+        html2canvas(document.querySelector("#captureRange")).then(canvas => {
+          console.log('canvas', canvas.toDataURL())
+          const base64String = canvas.toDataURL()
+          this.$store.commit('setSampleScreenshotOne', base64String)
+        });
       })
     } else {
       const title = this.$route.meta.title;
