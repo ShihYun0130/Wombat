@@ -3,12 +3,12 @@
     <div class="task-page-info"> 請從下方選擇任務點擊進入 </div>
     <div class="horizontal-line"></div>
     <div class="task-list-container">
-      <div v-for="task in allTaskList" :key="task.id" class="task-item" @click="goToDetailPage(task.id, task.type)">
-        <div v-if="task.type == 'imageLabel'" class="task-list-img-icon"></div>
+      <div v-for="task in allTaskList" :key="task.id" class="task-item" @click="goToDetailPage(task.taskId, task.taskType)">
+        <div v-if="task.taskType == 'classification'" class="task-list-img-icon"></div>
         <div v-else class="task-list-text-icon"></div>
         <div class="task-list-right">
-          <div class="grey-text f16">{{task.title}}</div>
-          <div class="white-grey-text f14">{{task.owner}}</div>
+          <div class="grey-text f16">{{task.taskTitle}}</div>
+          <div class="white-grey-text f14">{{task.taskOwner}}</div>
         </div>
       </div>
     </div>
@@ -18,62 +18,13 @@
 <script>
 import imageLabelIcon from '../assets/icons/imgLabel.png'
 import textLabelIcon from '../assets/icons/textLabelNoBg.png'
+import axios from "axios"
 
 export default {
   name: "TaskEntryPage",
   data() {
     return {
-      allTaskList: [{
-        id: 'taskId01',
-        type: "imageLabel",
-        title: "CLAS - 手寫數字圖片分類",
-        owner: "LINE CORP."
-      }, {
-        id: 'taskId01',
-        type: "imageLabel",
-        title: "CLAS - 毛毛蟲圖片分類",
-        owner: "LINE CORP."
-      }, {
-        id: 'taskId01',
-        type: "imageLabel",
-        title: "CLAS - 鳶尾花圖片分類",
-        owner: "LINE CORP."
-      }, {
-        id: 'taskId01',
-        type: "imageLabel",
-        title: "CLAS - 水草圖片分類",
-        owner: "LINE CORP."
-      }, {
-        id: 'taskId02',
-        type: "textLabel",
-        title: "NER - 電台廣播語料庫",
-        owner: "北科大教育廣播電台"
-      }, {
-        id: 'taskId02',
-        type: "textLabel",
-        title: "NER - 台語語音語料庫",
-        owner: "北科大教育廣播電台"
-      }, {
-        id: 'taskId02',
-        type: "textLabel",
-        title: "NER - 地區用語關聯庫",
-        owner: "台大社會所"
-      }, {
-        id: 'taskId02',
-        type: "textLabel",
-        title: "NER - 電台廣播語料庫",
-        owner: "北科大教育廣播電台"
-      }, {
-        id: 'taskId02',
-        type: "textLabel",
-        title: "NER - 台語語音語料庫",
-        owner: "北科大教育廣播電台"
-      }, {
-        id: 'taskId02',
-        type: "textLabel",
-        title: "NER - 地區用語關聯庫",
-        owner: "台大社會所"
-      }],
+      allTaskList: [],
       imageLabelIcon,
       textLabelIcon,
       userProfile: {}
@@ -82,21 +33,28 @@ export default {
   methods: {
     goToDetailPage(id, type) {
       this.$router.push({ path: '/Task-info', query: { id , type}})
+    },
+    async queryTaskInfo(){
+      //get all entitys
+      const response = await axios.get('http://140.112.107.210:8000/tasks');
+      console.log(response);
+      this.allTaskList = response.data.data;
     }
   },
   mounted() {
-    // LIFF login check
-    if (!this.$store.state.isAuthenticated) {
-      console.log('taskEntryPage dispatch')
-      this.$router.push('/')
-      // await this.$store.dispatch('getProfile')
-    } else {
-      console.log('profile in taskEntryPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
-    }
+    // // LIFF login check
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('taskInfoPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in taskInfoPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
 
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
+    this.queryTaskInfo();
   }
 }
 </script>

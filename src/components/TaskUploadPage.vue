@@ -145,7 +145,10 @@ export default {
       return await toBase64(file);
     },
     async nextPage() {
-      if (this.categories.length !== this.categoryNum || this.unlabeledImageStringList.length === 0) {
+      if (this.categories.length != this.categoryNum || this.unlabeledImageStringList.length === 0) {
+        console.log('categories', this.categories.length)
+        console.log('category num', this.categoryNum)
+        console.log('unlabeledImageStringList', this.unlabeledImageStringList.length)
         this.$toasted.show('請確認所有欄位都已完整填寫', {
           position: 'bottom-center',
           type: 'error',
@@ -159,7 +162,7 @@ export default {
       const labeledImage = JSON.parse(JSON.stringify(this.labeledImageStringList))
       console.log('labeledImage', labeledImage)
       const labeledList = this.categories.map((item, idx) => {
-        return {category: item, unlabeledData: labeledImage[idx]}
+        return {category: item, labeledData: labeledImage[idx]}
       })
       console.log('labeledList', labeledList[0])
 
@@ -192,14 +195,14 @@ export default {
   },
   mounted() {
     // LIFF login check
-    if (!this.$store.state.isAuthenticated) {
-      console.log('taskUploadPage dispatch')
-      this.$router.push('/')
-      // await this.$store.dispatch('getProfile')
-    } else {
-      console.log('profile in taskUploadPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
-    }
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('taskUploadPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in taskUploadPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
 
     const title = this.$route.meta.title
     this.$emit("setTitle", title)

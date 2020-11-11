@@ -50,38 +50,33 @@ export default new Vuex.Store({
     //   }
     // }
   },
-  mutations: {
+  mutations:{
     setSelectedImageListData(state, imageList) {
       state.selectImageList = imageList;
     },
-    mutations:{
-      setSelectedImageListData(state, imageList) {
-        state.selectImageList = imageList;
-      },
-      setTaskSettingInfo(state, taskInfo) {
-        console.log('taskInfo', taskInfo);
-        state.taskOwner = taskInfo.taskOwner
-        state.taskType = taskInfo.taskType
-        state.taskIcon = taskInfo.taskIcon
-        state.taskStartDate = taskInfo.taskStartDate
-        state.taskEndDate = taskInfo.taskEndDate
-        state.taskTitle = taskInfo.taskTitle
-        state.taskDescription = taskInfo.taskDescription
-        state.taskPayRule = taskInfo.taskPayRule
-        state.taskLeastPayLimitPage = taskInfo.taskLeastPayLimitPage
-      },
-      pushToAnswerIdList(state, answerId) {
-        state.answerIdList.push(answerId);
-      },
-      setLabelData(state, labelData) {
-        console.log('labelData', labelData);
-        state.labeledDataList = labelData.labeledDataList
-        state.unlabeledDataList = labelData.unlabeledDataList
-      },
-      setSampleScreenshot(state, screenshot) {
-        console.log('screenshot', screenshot)
-        state.sampleScreenshot = screenshot
-      }
+    setTaskSettingInfo(state, taskInfo) {
+      console.log('taskInfo', taskInfo);
+      state.taskOwner = taskInfo.taskOwner
+      state.taskType = taskInfo.taskType
+      state.taskIcon = taskInfo.taskIcon
+      state.taskStartDate = taskInfo.taskStartDate
+      state.taskEndDate = taskInfo.taskEndDate
+      state.taskTitle = taskInfo.taskTitle
+      state.taskDescription = taskInfo.taskDescription
+      state.taskPayRule = taskInfo.taskPayRule
+      state.taskLeastPayLimitPage = taskInfo.taskLeastPayLimitPage
+    },
+    pushToAnswerIdList(state, answerId) {
+      state.answerIdList.push(answerId);
+    },
+    setLabelData(state, labelData) {
+      console.log('labelData', labelData);
+      state.labeledDataList = labelData.labeledDataList
+      state.unlabeledDataList = labelData.unlabeledDataList
+    },
+    setSampleScreenshot(state, screenshot) {
+      console.log('screenshot', screenshot)
+      state.sampleScreenshot = screenshot
     },
     setAuthentication(state, isAuthenticated) {
       console.log('setAuthentication', isAuthenticated)

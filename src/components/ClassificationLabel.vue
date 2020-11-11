@@ -17,9 +17,9 @@
           <span class="emph">{{selectedClass}}</span>
           <span>?</span>
       </div>
-    </div>
 
-    <SelectableImageCard :imgList="labelList"/>
+      <SelectableImageCard :imgList="labelList"/>
+    </div>
 
     <div v-if="!isExample" style="width: 100%;">
       <div class="button-right">
@@ -155,14 +155,14 @@ export default {
     console.log('prevRoute', this.prevRoute);
 
     // LIFF login check
-    if (!this.$store.state.isAuthenticated) {
-      console.log('classLabelPage dispatch')
-      this.$router.push('/')
-      // await this.$store.dispatch('getProfile')
-    } else {
-      console.log('profile in classLabelPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
-    }
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('classLabelPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in classLabelPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
 
     if (this.prevRoute === "TaskUploadPage") {
       this.isExample = true
@@ -170,11 +170,11 @@ export default {
       this.$emit("setTitle", title);
       this.selectedClass = this.$store.state.labeledDataList[0].category
       this.labelList.push({ 
-        imagePath: this.$store.state.labeledDataList[0].unlabeledData,
+        imagePath: this.$store.state.labeledDataList[0].labeledData,
         labelId: 0
       })
       this.labelList.push({ 
-        imagePath: this.$store.state.labeledDataList[0],
+        imagePath: this.$store.state.unlabeledDataList[0],
         labelId: 1
       })
     } else {

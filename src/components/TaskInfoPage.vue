@@ -79,7 +79,7 @@ export default {
     startTask(taskId, taskTitle, taskType) {
       var currentPage = 1;
       var totalPage = 1;
-      if(this.taskType == 'imageLabel'){
+      if(this.taskType == 'classification'){
         this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage } });
       }
       else{
@@ -94,20 +94,15 @@ export default {
     this.taskType=this.$route.query.type;
     console.log(this.taskId)
 
-    // LIFF login check
-    if (!this.$store.state.isAuthenticated) {
-      console.log('taskInfoPage dispatch')
-      this.$router.push('/')
-      // await this.$store.dispatch('getProfile')
-    } else {
-      console.log('profile in taskInfoPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
-    }
-
-    const title = this.$route.meta.title
-    this.$emit("setTitle", title)
-    this.taskId=this.$route.query.id
-    console.log(this.taskId)
+    // // LIFF login check
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('taskInfoPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in taskInfoPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
 
     // if (!liff.isLoggedIn()) {
     //   console.log('is not logged in in task-info')

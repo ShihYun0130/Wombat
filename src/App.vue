@@ -54,13 +54,13 @@ export default {
     },
     setProfileImgPath(imgPath) {
       this.profileImgPath = imgPath
+      console.log('App.vue profile img', imgPath)
     },
     reload() {
       this.isRouterAlive = false;
       this.$nextTick(() => {
         this.isRouterAlive = true;
       });
-      console.log('App.vue profile img', imgPath)
     }
   },
   mounted() {
