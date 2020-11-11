@@ -8,6 +8,15 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import vuetify from '@/plugins/vuetify'
 import Vuex from 'vuex'
 import store from './store'
+import SweetAlertIcons from 'vue-sweetalert-icons';
+import Toasted from 'vue-toasted';
+
+Vue.use(Toasted, {
+  position: 'bottom-center',
+  durations: 3000,
+})
+
+Vue.use(SweetAlertIcons);
 
 Vue.use(Vuex)
 

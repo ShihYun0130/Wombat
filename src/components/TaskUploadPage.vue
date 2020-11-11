@@ -5,22 +5,24 @@
 
     <div class="grey-text w100 text-left mt20">
       <div class="dark-grey bold-text f20">第1步</div>
-      <div class="justify-start-row">
+      <!-- <div class="justify-start-row"> -->
         <div class="mt8"> 請輸入類別數量：</div>
           <div class="align-end-row">
-            <input @change="changeCategoryNum" class="task-number-input task-name-input grey-text mt12 f16" />
-            <div class="category-number-button f14" @click="checkCategoryNum">確定</div>
+            <input v-model="categoryNum" @change="changeCategoryNum" class="task-name-input grey-text mt12 f16" />
+            <div class="category-number-button f14" :class="{ isClicked: isCheck }" @click="checkCategoryNum">確定</div>
+            <div class="reset-button category-number-button f14" :class="{ isClicked: !isCheck }" @click="resetCategoryNum">重設</div>
           </div>
         </div>
-    </div>
+        <div class="hint-text" v-if="!isNum">請輸入一個小於 10 的數字</div>
+    <!-- </div> -->
 
     <div class="align-start-column text-left w100 mt20" v-if="isCheck">
       <div class="dark-grey bold-text f20">第2步</div>
 
-      <div v-for="num in categoryNumList" :key="num">
+      <div v-for="(idx, num) in categoryNumList" :key="idx">
         <div class="align-end-row w100 flex-nowrap">
           <div class="grey-text f16 text-left mt8"> 類別名稱：</div>
-          <input class="task-name-input grey-text mt12 f16 w65" />
+          <input v-model="categories[num]" class="task-name-input grey-text mt12 f16 w65" />
         </div>
         <div class="">
           <div class="grey-text f16 text-left mt8"> 上傳此類別範例圖檔：</div>
@@ -56,6 +58,7 @@
 </template>
 
 <script>
+// import axios from 'axios'
 export default {
   name: "TaskUploadPage",
   data() {
@@ -65,13 +68,24 @@ export default {
       categoryNumList: [],
       preview: [],
       image: [],
+      categories: [],
       multiplePreview: [],
       multipleImage: [],
+      labeledImageStringList: [],
+      unlabeledImageStringList: [],
+      isNum: true,
+      userProfile: {}
     }
   },
   methods: {
     checkCategoryNum() {
+      if (this.isCheck) return
+      if (this.categoryNum === 0 || this.categoryNum > 10 || parseFloat(this.categoryNum).toString() == "NaN") {
+        this.isNum = false
+        return
+      }
       this.isCheck = true
+      this.isNum = true
       for(var i = 0; i < this.categoryNum; i++) {
         this.categoryNumList.push(i);
       }
@@ -81,12 +95,12 @@ export default {
       this.categoryNumList = []
       this.categoryNum = event.target.value
     },
-    removeCategoryNum() {
+    resetCategoryNum() {
       this.isCheck = false
       this.categoryNum = 0
       this.categoryNumList = []
     },
-    previewImage(event) {
+    async previewImage(event) {
       let input = event.target;
       if (input.files) {
         let reader = new FileReader();
@@ -96,6 +110,7 @@ export default {
         this.image.push(input.files[0]);
         reader.readAsDataURL(input.files[0]);
       }
+      this.labeledImageStringList.push(await this.convertFilesToString(input.files[0]))
     },
     async uploadMultipleImage(event) {
       let input = event.target;
@@ -112,6 +127,13 @@ export default {
           index ++;
         }
       }
+      Promise.all(this.multipleImage.map(file => this.convertFilesToString(file)))
+      .then(value => {
+        Object.keys(value).forEach(key => {
+          const user = value[key]
+          this.unlabeledImageStringList.push(user)
+        })
+      })
     },
     async convertFilesToString(file) {
       const toBase64 = file => new Promise((resolve, reject) => {
@@ -120,19 +142,68 @@ export default {
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
       });
-      console.log('base', await toBase64(file))
-      // const imageString = await toBase64(file)
       return await toBase64(file);
     },
     async nextPage() {
+      if (this.categories.length != this.categoryNum || this.unlabeledImageStringList.length === 0) {
+        console.log('categories', this.categories.length)
+        console.log('category num', this.categoryNum)
+        console.log('unlabeledImageStringList', this.unlabeledImageStringList.length)
+        this.$toasted.show('請確認所有欄位都已完整填寫', {
+          position: 'bottom-center',
+          type: 'error',
+          duration: 3000
+        })
+        return
+      }
       this.convertFilesToString(this.multipleImage[0])
-      Promise.all(this.multipleImage.map(file => this.convertFilesToString(file)))
-      .then(value => {
-        console.log('value', value)
+      const unlabeledList = JSON.parse(JSON.stringify(this.unlabeledImageStringList))
+      console.log('unlabeledList', unlabeledList)
+      const labeledImage = JSON.parse(JSON.stringify(this.labeledImageStringList))
+      console.log('labeledImage', labeledImage)
+      const labeledList = this.categories.map((item, idx) => {
+        return {category: item, labeledData: labeledImage[idx]}
       })
+      console.log('labeledList', labeledList[0])
+
+      this.$store.commit('setLabelData', {
+        labeledDataList: labeledList,
+        unlabeledDataList: unlabeledList
+      })
+
+      // TODO: Call add task api
+
+      // const taskData = {
+      //   taskOwner: this.$store.state.taskOwner,
+      //   taskType: this.$store.state.taskType,
+      //   taskIcon: this.$store.state.taskIcon,
+      //   startDate: this.$store.state.taskStartDate,
+      //   endDate: this.$store.state.taskEndDate,
+      //   taskTitle: this.$store.state.taskTitle,
+      //   taskDescription: this.$store.state.taskDescription,
+      //   payRule: this.$store.state.taskPayRule,
+      //   leastPayLimitPage: this.$store.state.taskLeastPayLimitPage,
+      //   labeledDataList: this.$store.state.labeledStringList,
+      //   unlabeledDataList: this.$store.state.unLabeledStringList,
+      // }
+      
+      // const res = await axios.post('http://140.112.107.210:8000/task/addTask')
+      // console.log('res', res)
+
+      this.$router.push('/classificationLabel')
     }
   },
   mounted() {
+    // LIFF login check
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('taskUploadPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in taskUploadPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
+
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
   }
@@ -148,6 +219,24 @@ export default {
   margin: 35px;
   flex-wrap: wrap;
 }
+input, input:before, input:after {
+  -webkit-user-select: initial!important;
+  -khtml-user-select: initial!important;
+  -moz-user-select: initial!important;
+  -ms-user-select: initial!important;
+  user-select: initial!important;
+}
+.isClicked {
+  filter: brightness(70%);
+  box-shadow: 0px 0px 0px rgb(0, 0, 0, 0.16);
+}
+.reset-button {
+  background: rgb(255, 76, 76)!important;
+}
+.hint-text {
+  font-size: 10px;
+  color: rgb(255, 76, 76);
+}
 .category-number-button {
   margin-left: 20px;
   background: rgb(0, 195, 0);
@@ -156,9 +245,6 @@ export default {
   border-radius: 5px;
   color: white;
   box-shadow: 1px 3px 3px rgb(0, 0, 0, 0.13);
-}
-.task-number-input {
-  width: 50px;
 }
 .align-end-row {
   display: flex;

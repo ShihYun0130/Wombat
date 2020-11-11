@@ -32,18 +32,25 @@ export default {
       this.$emit("closeNav")
     },
     routeToProfile() {
-      this.$router.push({ name: "profile" })
+      this.$router.push('Profile')
       this.$emit("closeNav")
     },
     routeToTask() {
-      this.$router.push({ name: "tasks" })
+      this.$router.push('/Tasks')
       this.$emit("closeNav")
     },
     routeToTaskUpload() {
-      this.$router.push({ name: "TaskUploadPage" })
+      this.$router.push('/Task-setting')
       this.$emit("closeNav")
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      console.log('nextTick')
+      document.getElementById('navPage').style.opacity = '95%'
+      document.getElementsByClassName('crossIcon')[0].style.opacity = '60%'
+    })
+  }
 }
 </script>
 
@@ -59,27 +66,20 @@ export default {
   justify-content: flex-start;
   align-items: center;
   opacity: 95%;
-  z-index: 9;
+  z-index: 20;
 
   background: white;
 }
 
 .crossIcon {
   width: 20px;
-  margin: 25px;
+  margin: 45px;
 
   opacity: 60%;
 }
 
 .navs {
   margin-top: 100px;
-}
-@keyframes fade-in { 
-  from { 
-    opacity: 0; 
-  } to { 
-    opacity: 1; 
-  } 
 }
 
 .nav {

@@ -77,6 +77,8 @@
       </div>
     </div>
 
+    
+
     <!-- <div id="screenshot"></div> -->
     
   </div>
@@ -84,6 +86,7 @@
 
 <script>
 import html2canvas from 'html2canvas'
+// import liff from '@line/liff';
 
 export default {
   name: "TaskSettingPage",
@@ -102,6 +105,8 @@ export default {
       taskLeastPayLimitPage: '',
       isImageLabel: false,
       isTextLabel: false,
+      isError: true,
+      userProfile: {}
     }
   },
   methods: {
@@ -140,6 +145,14 @@ export default {
       this.taskIcon = await this.convertFilesToString(this.image)
     },
     nextPage() {
+      if (this.taskOwner === '' || this.taskType === '' || this.taskIcon === '' || this.taskStartDate === '' || this.taskTitle === '' || this.taskDescription === '' || this.taskPayRule === '' || this.taskLeastPayLimitPage === '') {
+        this.$toasted.show('請確認所有欄位都已完整填寫', {
+          position: 'bottom-center',
+          type: 'error',
+          duration: 3000
+        })
+        return
+      }
       this.$store.commit('setTaskSettingInfo', {
         taskOwner: this.taskOwner,
         taskType: this.taskType,
@@ -160,9 +173,20 @@ export default {
       });
     }
   },
-  mounted() {
+  async mounted() {
+    // LIFF login check
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('taskSettingPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in taskSettingPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
+
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
+    console.log('screenshot', this.$store.state.sampleScreenshot)
   }
 }
 </script>

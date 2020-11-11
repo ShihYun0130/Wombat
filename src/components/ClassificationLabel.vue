@@ -1,23 +1,27 @@
 <template>
-  <div class="justify-center-column p26" >
-    <div class="task-header">
-      <i>
-        <img class="small-icon" src="../assets/icons/compare-24px.svg">
-      </i>
-      <span>
-        <div class="dark-grey bold-text f20">
-          {{ taskTitle }}
-        </div>
-      </span>
+  <div class="justify-center-column p26">
+    <div id="captureRange">
+      <div class="task-header">
+        <!-- <i>
+          <img class="small-icon" src="../assets/icons/compare-24px.svg">
+        </i> -->
+        <span>
+          <div class="dark-grey bold-text f20">
+            {{ taskTitle }}
+          </div>
+        </span>
+      </div>
+
+      <div class="p2">
+          請問下列圖片哪些包含
+          <span class="emph">{{selectedClass}}</span>
+          <span>?</span>
+      </div>
+
+      <SelectableImageCard :imgList="labelList"/>
     </div>
 
-    <div class="p2">
-        請問下列圖片哪些屬於
-        <span class="emph">{{selectedClass}}</span>
-        <span>?</span>
-    </div>
-    <SelectableImageCard :imgList="labelList"/>
-    <div style="width: 100%;">
+    <div v-if="!isExample" style="width: 100%;">
       <div class="button-right">
         <button class="btn-lg" type="submit" @click="onSubmitAns(taskType, taskId, taskTitle, currentPage+1, totalPage)">下一題
         <span style="margin-left:6px; margin-top:-2px;">
@@ -29,6 +33,11 @@
       </div>
     </div>
 
+    <div  v-else class="w100 justify-center-row">
+      <div class="next-page-button" @click="nextPage">
+        <div class="white-text f20 bold-text">下一步</div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -36,6 +45,7 @@
 <script>
 import SelectableImageCard from './SelectableImageCard.vue'
 import axios from "axios"
+import html2canvas from 'html2canvas'
 
 export default {
   name: 'Classification',
@@ -46,7 +56,7 @@ export default {
   props: {
     msg: String,
   },
-  data: function(){
+  data() {
     return{
         targetClass: [],
         selectedClass:"",
@@ -56,6 +66,8 @@ export default {
         labelList:[],
         taskId:"",
         taskType:"",
+        isExample: false,
+        userProfile: {}
     }
   }, 
   computed: {
@@ -123,18 +135,67 @@ export default {
       // console.log("labelId",this.labelId);
       this.selectedClass = this.targetClass[this.currentPage];
       loader.hide();
+    },
+    nextPage() {
+      html2canvas(document.querySelector("#captureRange")).then(canvas => {
+        console.log('canvas', canvas.toDataURL())
+        const base64String = canvas.toDataURL()
+        this.$store.commit('setSampleScreenshot', base64String)
+        // document.getElementById('screenshot').appendChild(canvas)
+      });
+      this.$router.push('/Task-example')
     }
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.prevRoute = from.name
+    })
+  },
   mounted() {
-    const title = this.$route.meta.title;
-    this.taskType = this.$route.query.taskType;
-    this.taskTitle = this.$route.query.taskTitle;
-    this.taskId = this.$route.query.taskId;
-    this.currentPage = parseInt(this.$route.query.currentPage);
-    this.totalPage = parseInt(this.$route.query.totalPage);
-    var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
-    this.$emit("setTitle", customTitle);
-    this.queryTaskInfo();
+    console.log('prevRoute', this.prevRoute);
+
+    // LIFF login check
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('classLabelPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in classLabelPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
+
+    if (this.prevRoute === "TaskUploadPage") {
+      this.isExample = true
+      const title = this.$route.meta.title;
+      this.$emit("setTitle", title);
+      this.selectedClass = this.$store.state.labeledDataList[0].category
+      this.labelList.push({ 
+        imagePath: this.$store.state.labeledDataList[0].labeledData,
+        labelId: 0
+      })
+      this.labelList.push({ 
+        imagePath: this.$store.state.unlabeledDataList[0],
+        labelId: 1
+      })
+    } else {
+      const title = this.$route.meta.title;
+      this.taskType = this.$route.query.taskType;
+      this.taskTitle = this.$route.query.taskTitle;
+      this.taskId = this.$route.query.taskId;
+      this.currentPage = parseInt(this.$route.query.currentPage);
+      this.totalPage = parseInt(this.$route.query.totalPage);
+      var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
+      this.$emit("setTitle", customTitle);
+      this.queryTaskInfo();
+    }
+
+    // this.selectedClass = "狗";
+    // axios
+    //   .get('https://www.runoob.com/try/ajax/json_demo.json')
+    //   .then(response => (this.SelectedClass = response))
+    //   .catch(function (error) { 
+    //     console.log(error);
+    //   });
   }
 }
 

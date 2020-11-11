@@ -8,7 +8,7 @@
 export default {
   name: "PageNotFound",
   mounted() {
-    const title = ''
+    const title = ' '
     this.$emit("setTitle", title)
   }
 }

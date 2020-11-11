@@ -1,6 +1,6 @@
 <template>
   <div id="profilePage">
-    <div class="profile-name"> 陳漢威 Frank </div>
+    <div class="profile-name"> {{userProfile.displayName}} </div>
     <div class="profile-intro">
       <div class="grey-text">共完成 <span class="green-text">{{totalTaskAmount}}</span> 項公開任務</div>
       <div class="grey-text">總體評分: <span class="green-text">{{score}}</span> / 5</div>
@@ -29,6 +29,7 @@
 
 <script>
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
+// import liff from '@line/liff';
 
 export default {
   name: "ProfilePage",
@@ -64,7 +65,8 @@ export default {
         type: "輪廓標註",
         level: 0,
         levelPercentage: 0
-      }]
+      }],
+      userProfile: {}
     }
   },
   methods: {
@@ -73,25 +75,52 @@ export default {
       this.$router.push('/Tasks')
     }
   },
-  mounted() {
+  // async beforeCreate() {
+  //   // LIFF login check
+  //   console.log('Hook: beforeCreate');
+  //   await liff.init({ liffId: '1655218168-VQrDOZBE' });
+  //   if (!liff.isLoggedIn()) {
+  //     console.log('has not logged in, store')
+  //     liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
+  //     console.log('redirected back')
+  //   }
+  //   const userProfile = await liff.getProfile()
+  //   this.userProfile = userProfile
+  //   this.$store.commit('setProfile', userProfile)
+  //   console.log('liff init beforeCreate', userProfile)
+  //   this.$emit("setProfilePic", userProfile.pictureUrl)
+  // },
+  async mounted() {
     const title = ''
-    const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
+    // const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
     this.$emit("setTitle", title)
-    this.$emit("setProfilePic", imgPath)
+    // this.$emit("setProfilePic", this.userProfile.pictureUrl)
   }
 }
 </script>
 
 <style>
+* {
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */      
+}
+body {
+  background: rgb(246, 246, 246)!important;
+  margin: 0 !important;
+}
 #profilePage {
-  margin-top: 100px;
+  padding-top: 100px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: flex-start;
+  align-items: center;
 
-  height: 82%;
+  height: 100%;
+  min-height: 750px;
   overflow: scroll;
+  -webkit-overflow-scrolling: touch
 }
 
 .profile-name {
@@ -103,8 +132,8 @@ export default {
 .profile-intro {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: flex-start;
+  align-items: center;
   width: 150px;
   margin-top: 20px;
 }
@@ -145,7 +174,7 @@ export default {
 
   margin: 22px 0;
   width: 250px;
-  height: 40%;
+  height: 40px;
 }
 
 .task-middle {
@@ -181,7 +210,7 @@ export default {
 
   box-shadow: 1px 3px 2px rgb(0, 0, 0, 0.13);
 
-  margin: 20px 0;
+  margin: 30px 0;
   padding: 14px 0;
 }
 

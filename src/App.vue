@@ -2,15 +2,18 @@
   <div id="app">
     <!-- <div class="grey-back" /> -->
     <div v-if="this.title === ''" class="profile-img">
-      <img :src="profileImgPath" />
+      <img :src="profileImgPath ? profileImgPath : profile_default" />
     </div>
 
     <Header :title="title" @openNav="openAndCloseNav" />
     <div class="white-back">
       <router-view @setTitle="setTitle" @setProfilePic="setProfileImgPath" v-if="isRouterAlive"></router-view>
     </div>
+    <!-- <div :class="{ 'app-nav-show': isOpen, 'app-nav-hide': !isOpen }">
+      <NavPage v-if="isOpen" @closeNav="openAndCloseNav" />
+    </div> -->
     <transition name="slide-fade">
-      <nav-page v-if="isOpen" @closeNav="openAndCloseNav" />
+      <NavPage v-if="isOpen" @closeNav="openAndCloseNav" />
     </transition>
   </div>
 </template>
@@ -18,6 +21,7 @@
 <script>
 import Header from '../src/components/Header'
 import NavPage from '../src/components/NavPage'
+import profile_default from './assets/icons/profile_default.png'
 
 export default {
   name: 'App',
@@ -32,10 +36,12 @@ export default {
   }, 
   data () {
     return {
+      profile_default,
       title: '',
       isOpen: false,
       profileImgPath: '',
       isRouterAlive: true,
+      userProfile: {}
     }
   },
   methods: {
@@ -43,10 +49,12 @@ export default {
       this.isOpen = !this.isOpen
     },
     setTitle(title) {
+      console.log('title', title)
       this.title = title
     },
     setProfileImgPath(imgPath) {
       this.profileImgPath = imgPath
+      console.log('App.vue profile img', imgPath)
     },
     reload() {
       this.isRouterAlive = false;
@@ -54,17 +62,24 @@ export default {
         this.isRouterAlive = true;
       });
     }
+  },
+  mounted() {
+    console.log('mounted in app')
+    // await liff.init({ liffId: '1655218168-VQrDOZBE' });
+
+    // if (!liff.isLoggedIn()) {
+    //   console.log('is not logged in')
+    //   this.$store.dispatch('liffLogin')
+    // } else if (!this.userProfile) {
+    //   await this.$store.dispatch('getProfile')
+    //   this.userProfile = this.$store.state.userProfile
+    //   console.log('is logged in', this.$store.state.userProfile)
+    // }
   }
 }
 </script>
 
 <style>
-* {
-  -webkit-user-select: none;  /* Chrome all / Safari all */
-  -moz-user-select: none;     /* Firefox all */
-  -ms-user-select: none;      /* IE 10+ */
-  user-select: none;          /* Likely future */      
-}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -85,22 +100,21 @@ export default {
   border-top-left-radius: 61px;
   box-shadow: 0 3px 6px rgb(0, 0, 0, 0.16);
   overflow: scroll;
+  -webkit-overflow-scrolling: touch
 }
 
-body {
-  background: rgb(246, 246, 246)!important;
+.slide-fade-enter {
+  transform: translateX(-100%);
+  opacity: 0;
 }
-
-body { margin: 0 !important; }
-
 .slide-fade-enter-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   opacity: 30%;
 }
 .slide-fade-leave-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
-.slide-fade-enter, .slide-fade-leave-to {
+.slide-fade-leave-to {
   transform: translateX(-100%);
   opacity: 0;
 }
@@ -114,9 +128,11 @@ body { margin: 0 !important; }
   top: 3%;
   overflow: hidden;
   border-radius: 50%;
+  /* background:  rgb(190, 190, 190); */
 
   border: 10px solid white;
   box-shadow: 1px 5px 6px rgb(0, 0, 0, 0.16);
+  z-index: 10;
 }
 
 .profile-img > img {
@@ -125,6 +141,5 @@ body { margin: 0 !important; }
   height: 100%;
   width: auto;
 }
-
 
 </style>
