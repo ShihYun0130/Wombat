@@ -52,8 +52,8 @@ export default {
     //   this.userProfile = this.$store.state.userProfile
     // }
 
-    const title = this.$route.meta.title
-    this.$emit("setTitle", title)
+    const title = this.$route.meta.title;
+    this.$emit("setTitle", title);
     this.queryTaskInfo();
   }
 }

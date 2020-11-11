@@ -2,7 +2,7 @@
   <div id="taskInfoPage" class="justify-center-column">
     <div class="dark-grey bold-text f20">{{taskTitle}}</div>
     <div class="justify-start-row mt12 w100">
-      <img :src="lineLogo" class="task-owner-logo" />
+      <img :src="Logo" class="task-owner-logo" />
       <div class="align-start-column">
         <div class="bold-text white-grey-text f20">{{taskOwner}}</div>
         <div class="align-start-column">
@@ -46,33 +46,35 @@
 </template>
 
 <script>
-import lineLogo from '../assets/icons/lineLogo.png'
+import Logo from '../assets/icons/logo_placeholder.png'
 import ques from '../assets/ques.png'
 import ans from '../assets/ans.png'
 import shareIcon from '../assets/icons/shareIcon.png'
 // import liff from '@line/liff';
+import axios from "axios"
 
 export default {
   name: "TaskInfoPage",
   data() {
     return {
-      lineLogo,
+      Logo,
       ques,
       ans,
       shareIcon,
-      taskTitle: "CLAS - 手寫數字圖片分類",
-      taskOwner: "LINE CORP.",
-      startDate: "2020/10/24",
-      endDate: "2020/11/14",
+      taskTitle: "",
+      taskOwner: "",
+      startDate: "",
+      endDate: "",
       taskPay: "任務報酬: <span style=\"color:rgb(0, 195, 0)\">$2.5</span> / 每10頁</br>* <span style=\"color:rgb(255, 78, 78)\">最低</span>至少須完成10頁",
-      taskDescription: "手寫數字的大型數據庫，通常用於訓練各種圖像處理系統。該數據庫還廣泛用於機器學習領域的培訓和測試。它是通過“重新混合”來自NIST原始數據集的樣本而創建的。創作者認為，由於NIST的訓練數據集是從美國人口普查局員工那裡獲得的。",
+      taskDescription: "",
       taskExQuestion: "請問下列圖片哪些屬於<span style=\"color:rgb(0, 195, 0)\">數字2</span>?",
       taskExQuesPic: '',
       taskExAnswerHint: "您應該點擊選擇:",
       taskExAnsPic: '',
       taskId: '',
       taskType: '',
-      userProfile: {}
+      userProfile: {},
+      payRule: 0,
     }
   },
   methods: {
@@ -84,6 +86,27 @@ export default {
       }
       else{
         this.$router.push({ path: '/NERTaskPage', query: { taskType, taskId, taskTitle, currentPage, totalPage } });
+      }
+    },
+    async queryTaskInfo(){
+      const response = await axios.post('http://140.112.107.210:8000/task',{
+        taskId: this.taskId,
+        userId: "userId01",
+      });
+      console.log(response);
+      var result = response.data.data;
+      if(response.data.success){
+        this.taskDescription = result.description;
+        this.Logo = result.taskIcon;
+        this.ques = result.examplePic[0];
+        this.ans = result.examplePic[1];
+        this.taskTitle = result.taskTitle;
+        this.taskOwner = result.taskOwner;
+        this.startDate = result.startDate;
+        this.endDate = result.endDate;
+        this.taskPay = "任務報酬: <span style=\"color:rgb(0, 195, 0)\">$2.5</span> / 每10頁</br>* <span style=\"color:rgb(255, 78, 78)\">最低</span>至少須完成10頁";
+        this.payRule = result.payRule;
+        console.log(this.taskDescription);
       }
     }
   },
@@ -114,6 +137,7 @@ export default {
     //   this.userProfile = this.$store.state.userProfile
     //   console.log('is logged in in task info', this.$store.state.userProfile)
     // }
+    this.queryTaskInfo();
   }
 }
 </script>

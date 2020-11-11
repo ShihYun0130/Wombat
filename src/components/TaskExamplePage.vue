@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import axios from "axios"
+
 export default {
   name: "TaskExamplePage",
   data() {
@@ -69,8 +71,36 @@ export default {
       sampleTaskImage: "",
       preview: null,
       image: null,
-      userProfile: {}
+      userProfile: {},
+      taskOwner: null,
+      taskType: null,
+      taskIcon: null,
+      taskStartDate: null,
+      taskEndDate: null,
+      taskTitle: null,
+      taskDescription: null,
+      taskPayRule: null,
+      taskLeastPayLimitPage: null,
     }
+  },
+  computed:{
+    getTaskInfo: function(){
+      return {
+        taskOwnerName: this.$store.state.taskOwner,
+        taskOwnerId: this.$store.state.userProfile.userId,
+        taskType: this.$store.state.taskType,
+        taskIcon: this.$store.state.taskIcon,
+        startDate: this.$store.state.taskStartDate,
+        endDate: this.$store.state.taskEndDate,
+        taskTitle: this.$store.state.taskTitle,
+        description: this.$store.state.taskDescription,
+        payRule: this.$store.state.taskPayRule,
+        leastPayLimitPage: this.$store.state.taskLeastPayLimitPage,
+        labeledDataList: this.$store.state.labeledDataList,
+        unlabeledDataList: this.$store.state.unlabeledDataList,
+        examplePic: [this.$store.state.sampleScreenshotOne, this.$store.state.sampleScreenshot],
+      }
+    },
   },
   methods: {
     questionPreviewImage (event) {
@@ -107,8 +137,14 @@ export default {
       }
       this.taskIcon = await this.convertFilesToString(this.image)
     },
+    async sendTask() {
+      const response = await axios.post('http://140.112.107.210:8000/task/addTask', this.getTaskInfo);
+      console.log(response);
+    },
     nextPage() {
-      this.$router.push('/Success')
+      console.log(this.getTaskInfo);
+      this.sendTask();
+      this.$router.push('/Success');
     }
   },
   mounted() {
@@ -122,12 +158,13 @@ export default {
     //   this.userProfile = this.$store.state.userProfile
     // }
 
-    const title = this.$route.meta.title
-    this.$emit("setTitle", title)
 
-    console.log('screenshot in example page', this.$store.state.sampleScreenshot)
-    this.sampleTaskImage = this.$store.state.sampleScreenshot
-    // this.sampleTaskImage = "https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/75576600_3078766742150594_1763162161808408576_o.jpg?_nc_cat=104&ccb=2&_nc_sid=09cbfe&_nc_ohc=z8GKpxc9iF0AX_QETVm&_nc_ht=scontent-tpe1-1.xx&oh=d061df47afe67c97875fe7dc91be332d&oe=5FC1E554"
+    const title = this.$route.meta.title;
+    this.$emit("setTitle", title);
+
+    console.log('screenshot in example page', this.$store.state.sampleScreenshot);
+    this.sampleTaskImage = this.$store.state.sampleScreenshot;
+    this.getTaskInfo();
   }
 }
 </script>
