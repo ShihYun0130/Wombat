@@ -1,6 +1,6 @@
 <template>
   <div id="profilePage">
-    <div class="profile-name"> 陳漢威 Frank </div>
+    <div class="profile-name"> {{userProfile.displayName}} </div>
     <div class="profile-intro">
       <div class="grey-text">共完成 <span class="green-text">{{totalTaskAmount}}</span> 項公開任務</div>
       <div class="grey-text">總體評分: <span class="green-text">{{score}}</span> / 5</div>
@@ -88,12 +88,13 @@ export default {
     this.userProfile = userProfile
     this.$store.commit('setProfile', userProfile)
     console.log('liff init beforeCreate', userProfile)
+    this.$emit("setProfilePic", userProfile.pictureUrl)
   },
   async mounted() {
     const title = ''
-    const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
+    // const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
     this.$emit("setTitle", title)
-    this.$emit("setProfilePic", imgPath)
+    // this.$emit("setProfilePic", this.userProfile.pictureUrl)
   }
 }
 </script>

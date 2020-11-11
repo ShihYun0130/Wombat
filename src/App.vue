@@ -2,7 +2,7 @@
   <div id="app">
     <!-- <div class="grey-back" /> -->
     <div v-if="this.title === ''" class="profile-img">
-      <img :src="profileImgPath" />
+      <img :src="profileImgPath ? profileImgPath : profile_default" />
     </div>
 
     <Header :title="title" @openNav="openAndCloseNav" />
@@ -21,7 +21,7 @@
 <script>
 import Header from '../src/components/Header'
 import NavPage from '../src/components/NavPage'
-// import liff from '@line/liff';
+import profile_default from './assets/icons/profile_default.png'
 
 export default {
   name: 'App',
@@ -36,6 +36,7 @@ export default {
   }, 
   data () {
     return {
+      profile_default,
       title: '',
       isOpen: false,
       profileImgPath: '',
@@ -48,6 +49,7 @@ export default {
       this.isOpen = !this.isOpen
     },
     setTitle(title) {
+      console.log('title', title)
       this.title = title
     },
     setProfileImgPath(imgPath) {
@@ -58,6 +60,7 @@ export default {
       this.$nextTick(() => {
         this.isRouterAlive = true;
       });
+      console.log('App.vue profile img', imgPath)
     }
   },
   mounted() {
@@ -125,6 +128,7 @@ export default {
   top: 3%;
   overflow: hidden;
   border-radius: 50%;
+  /* background:  rgb(190, 190, 190); */
 
   border: 10px solid white;
   box-shadow: 1px 5px 6px rgb(0, 0, 0, 0.16);

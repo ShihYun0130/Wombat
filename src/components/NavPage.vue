@@ -66,7 +66,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   opacity: 95%;
-  z-index: 9;
+  z-index: 20;
 
   background: white;
 }
