@@ -36,7 +36,7 @@ export default {
     },
     async queryTaskInfo(){
       //get all entitys
-      const response = await axios.get('http://140.112.107.210:8000/tasks');
+      const response = await axios.get('https://platypus-backend.herokuapp.com/tasks');
       console.log(response);
       this.allTaskList = response.data.data;
     }
