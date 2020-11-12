@@ -29,14 +29,15 @@ export default {
     }
   },
   mounted() {
-    if (!this.$store.state.isAuthenticated) {
-      console.log('successPage dispatch')
-      this.$router.push('/')
-      // await this.$store.dispatch('getProfile')
-    } else {
-      console.log('profile in successPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
-    }
+    // LIFF login check
+    // if (!this.$store.state.isAuthenticated) {
+    //   console.log('successPage dispatch')
+    //   this.$router.push('/')
+    //   // await this.$store.dispatch('getProfile')
+    // } else {
+    //   console.log('profile in successPage', this.$store.state.userProfile)
+    //   this.userProfile = this.$store.state.userProfile
+    // }
 
     const title = ' '
     this.$emit("setTitle", title)

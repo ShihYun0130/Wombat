@@ -123,6 +123,12 @@ export default {
     }
   },
   async mounted() {
+    let loader = this.$loading.show({
+      color: 'rgb(0, 195, 0)',
+      loader: 'dots',
+      opacity: 1
+    });
+
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
     this.taskId=this.$route.query.id
@@ -149,7 +155,8 @@ export default {
     //   this.userProfile = this.$store.state.userProfile
     //   console.log('is logged in in task info', this.$store.state.userProfile)
     // }
-    this.queryTaskInfo();
+    await this.queryTaskInfo();
+    loader.hide();
   }
 }
 </script>

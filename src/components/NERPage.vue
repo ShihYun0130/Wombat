@@ -253,7 +253,13 @@ export default {
         loader.hide();
       }
   },
-  mounted() {
+  async mounted() {
+    let loader = this.$loading.show({
+      color: 'rgb(0, 195, 0)',
+      loader: 'dots',
+      opacity: 1
+    });
+
     // LIFF login check
     // if (!this.$store.state.isAuthenticated) {
     //   console.log('NERPage dispatch')
@@ -272,7 +278,9 @@ export default {
     this.totalPage = parseInt(this.$route.query.totalPage);
     var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
     this.$emit("setTitle", customTitle);
-    this.queryTaskInfo();
+    await this.queryTaskInfo();
+
+    loader.hide();
   }
 }
 
