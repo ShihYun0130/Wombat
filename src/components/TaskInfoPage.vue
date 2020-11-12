@@ -80,7 +80,7 @@ export default {
   methods: {
     startTask(taskId, taskTitle, taskType) {
       var currentPage = 1;
-      var totalPage = 1;
+      var totalPage = 4;
       if(this.taskType == 'classification'){
         this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage } });
       }
@@ -97,7 +97,7 @@ export default {
       var result = response.data.data;
       if(response.data.success){
         this.taskDescription = result.description;
-        this.Logo = result.taskIcon;
+        this.Logo = result.taskIcon ? result.taskIcon : this.Logo;
         this.ques = result.examplePic[0];
         this.ans = result.examplePic[1];
         this.taskTitle = result.taskTitle;

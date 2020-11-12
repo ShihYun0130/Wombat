@@ -80,11 +80,12 @@ export default {
   computed: {
     args: function() {
                 // labelIdList: this.$store.state.answerIdList
+
       return {
           taskId: this.taskId,
           userId: "userId01",
-          taskType: "ner",
-          labelIdList: this.$store.state.answerIdList
+          taskType: this.taskType,
+          transactionId: JSON.parse(localStorage.getItem('transactionId'))
       }
     }
   },
