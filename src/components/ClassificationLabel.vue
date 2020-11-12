@@ -66,6 +66,7 @@ export default {
         labelList:[],
         taskId:"",
         taskType:"",
+        numberOfImage: 4,
         isExample: false,
         userProfile: {}
     }
@@ -79,23 +80,42 @@ export default {
         output.push(item.labelId);
         this.$store.commit('pushToAnswerIdList', item.labelId);
       }
-      return {
-        userId: "",
-        classification: this.selectedClass,
-        labelIdList: output,
-        taskId: this.taskId
-      };
+      if(this.currentPage == 1){
+        return {
+          userId: "",
+          taskType: this.taskType,
+          classification: this.selectedClass,
+          labelIdList: output,
+          taskId: this.taskId
+        };
+      }
+      else{
+          return {
+          userId: "",
+          taskType: this.taskType,
+          classification: this.selectedClass,
+          labelIdList: output,
+          taskId: this.taskId,
+          transactionId: JSON.parse(localStorage.getItem('transactionId')),
+        };
+      }
     }
   },
   methods: {
-    onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
+    async onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
       console.log(this.args);
-      axios
-      .post('http://140.112.107.210:8000/saveAnswer',this.args)
-      .then(response => console.log(response))
-      .catch(function (error) { 
-        console.log(error);
-      });
+      const response = await axios.post('http://140.112.107.210:8000/saveAnswer',this.args);
+      if (response.data.success) 
+      {
+        console.log(response);
+        console.log('LocaltransactionId', JSON.parse(localStorage.getItem('transactionId')));
+        if(response.data.data && this.currentPage == 1) {
+          this.transactionId = response.data.data.transactionId;
+          await localStorage.setItem('transactionId', JSON.stringify(response.data.data.transactionId));
+          console.log('transactionId', JSON.parse(localStorage.getItem('transactionId')));
+        }
+      }
+      
 
       if(currentPage <= totalPage){
         this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage}})
@@ -123,9 +143,10 @@ export default {
       const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
       {
           taskId: this.taskId,
-          taskType: "classification",
+          taskType: this.taskType,
           userId: "userId01",
-          labelCount: 2,
+          labelCount: this.numberOfImage,
+          page: this.currentPage,
       });
       // console.log(response2.data.data);
       // this.labelId = response2.data.data.label.labelId;

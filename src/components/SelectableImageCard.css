@@ -10,7 +10,8 @@
   .SelectableImageCard__item {
     margin: 0px 12px 12px 0px;
     display: flex;
-    width: 40%;
+    width: 45%;
+    height: 150px;
   }
   
   .SelectableImageCard__thumbnail{
@@ -55,7 +56,7 @@
   
   .SelectableImageCard__img{
     -webkit-user-drag: none;
-    max-height: 20rem;
+    /* max-height: 20rem; */
     max-width: 100%;
     margin-right: auto;
     margin-left: auto;
