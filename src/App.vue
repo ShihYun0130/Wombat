@@ -65,16 +65,6 @@ export default {
   },
   mounted() {
     console.log('mounted in app')
-    // await liff.init({ liffId: '1655218168-VQrDOZBE' });
-
-    // if (!liff.isLoggedIn()) {
-    //   console.log('is not logged in')
-    //   this.$store.dispatch('liffLogin')
-    // } else if (!this.userProfile) {
-    //   await this.$store.dispatch('getProfile')
-    //   this.userProfile = this.$store.state.userProfile
-    //   console.log('is logged in', this.$store.state.userProfile)
-    // }
   }
 }
 </script>

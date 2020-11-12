@@ -59,6 +59,7 @@
 
 <script>
 import axios from "axios"
+import * as config from "../../config"
 
 export default {
   name: "TaskExamplePage",
@@ -138,7 +139,7 @@ export default {
       this.taskIcon = await this.convertFilesToString(this.image)
     },
     async sendTask() {
-      const response = await axios.post('http://140.112.107.210:8000/task/addTask', this.getTaskInfo);
+      const response = await axios.post(`${config.API_DOMAIN}/task/addTask`, this.getTaskInfo);
       console.log('send Task response', response);
       return response.data.success
     },
@@ -163,14 +164,13 @@ export default {
   },
   mounted() {
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('taskExamplePage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in taskExamplePage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('taskExamplePage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in taskExamplePage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
 
     const title = this.$route.meta.title;

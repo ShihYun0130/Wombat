@@ -47,6 +47,7 @@ import SelectableImageCard from './SelectableImageCard.vue'
 import {mapActions} from "vuex"
 import axios from "axios"
 import html2canvas from 'html2canvas'
+import * as config from '../../config'
 
 export default {
   name: 'Classification',
@@ -107,7 +108,7 @@ export default {
 
     async onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
       console.log(this.args);
-      const response = await axios.post('http://140.112.107.210:8000/saveAnswer',this.args);
+      const response = await axios.post(`${config.API_DOMAIN}/saveAnswer`,this.args);
       if (response.data.success) 
       {
         console.log(response);
@@ -131,18 +132,18 @@ export default {
     },
     async queryTaskInfo(){
       //get all class
-      const response = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
+      const response = await axios.post(`${config.API_DOMAIN}/task/getQuestion`, 
       {
           taskId: this.taskId,
-          userId: "userId01",
+          userId: this.userProfile.userId,
       });
       // console.log(response.data.data);
       this.targetClass = response.data.data;
-      const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
+      const response2 = await axios.post(`${config.API_DOMAIN}/task/getLabel`, 
       {
           taskId: this.taskId,
           taskType: this.taskType,
-          userId: "userId01",
+          userId: this.userProfile.userId,
           labelCount: this.numberOfImage,
           page: this.currentPage,
       });
@@ -173,14 +174,13 @@ export default {
     console.log('prevRoute', this.prevRoute);
 
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('classLabelPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in classLabelPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('classLabelPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in classLabelPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
     if (this.prevRoute === "TaskUploadPage") {
       this.isExample = true

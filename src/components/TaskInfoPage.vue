@@ -50,8 +50,8 @@ import Logo from '../assets/icons/logo_placeholder.png'
 import ques from '../assets/ques.png'
 import ans from '../assets/ans.png'
 import shareIcon from '../assets/icons/shareIcon.png'
-// import liff from '@line/liff';
 import axios from "axios"
+import * as config from "../../config"
 
 export default {
   name: "TaskInfoPage",
@@ -91,9 +91,9 @@ export default {
       }
     },
     async queryTaskInfo(){
-      const response = await axios.post('http://140.112.107.210:8000/task',{
+      const response = await axios.post(`${config.API_DOMAIN}/task`,{
         taskId: this.taskId,
-        userId: "userId01",
+        userId: this.userProfile.userId,
       });
       console.log(response);
       var result = response.data.data;
@@ -112,7 +112,7 @@ export default {
       }
 
       //get all class
-      const response2 = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
+      const response2 = await axios.post(`${config.API_DOMAIN}/task/getQuestion`, 
       {
           taskId: this.taskId,
           userId: "",
@@ -137,24 +137,14 @@ export default {
 
     console.log('mounted profile in task info', this.$store.state.userProfile)
 
-    // // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('taskInfoPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in taskInfoPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
-
-    // if (!liff.isLoggedIn()) {
-    //   console.log('is not logged in in task-info')
-    //   this.$store.dispatch('liffLogin')
-    // } else if (!this.userProfile) {
-    //   await this.$store.dispatch('getProfile')
-    //   this.userProfile = this.$store.state.userProfile
-    //   console.log('is logged in in task info', this.$store.state.userProfile)
-    // }
+    // LIFF login check
+    if (!this.$store.state.isAuthenticated) {
+      console.log('taskInfoPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in taskInfoPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
     await this.queryTaskInfo();
     loader.hide();
   }

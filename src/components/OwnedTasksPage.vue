@@ -30,7 +30,6 @@ export default {
     // if (!this.$store.state.isAuthenticated) {
     //   console.log('ownedTask dispatch')
     //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
     // } else {
     //   console.log('profile in ownedTask', this.$store.state.userProfile)
     //   this.userProfile = this.$store.state.userProfile
