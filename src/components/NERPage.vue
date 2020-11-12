@@ -205,13 +205,6 @@ export default {
         this.selectedObject[this.targetClass[0]].isEdit = true;
       },
       async queryTaskInfo(){
-        // loading page
-        let loader = this.$loading.show({
-          // Optional parameters
-          canCancel: true,
-          onCancel: this.onCancel,
-          opacity: 1,
-        });
         //get all entitys
         const response = await axios.post(`${config.API_DOMAIN}/task/getQuestion`, 
         {
@@ -245,7 +238,6 @@ export default {
           }
         }.bind(this));
         this.setInitialSelection();
-        loader.hide();
       }
   },
   async mounted() {
