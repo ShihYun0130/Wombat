@@ -18,6 +18,7 @@
 import axios from "axios" 
 import imageLabelIcon from '../assets/icons/imgLabel.png'
 import textLabelIcon from '../assets/icons/textLabelNoBg.png'
+import * as config from '../../config'
 // import company_default from '../assets/icons/company_default.png'
 
 export default {
@@ -42,14 +43,21 @@ export default {
   },
   methods: {
     async queryInfo(){
-      const response = await axios.post('https://platypus-backend.herokuapp.com/task/getMyTask', this.args);
+      console.log('own', this.args)
+      const response = await axios.post(`${config.API_DOMAIN}/task/getMyTask`, this.args);
       console.log(response);
       if(response.data.success){
         this.taskList = response.data.data;
       }
     }
   },
-  mounted() {
+  async mounted() {
+    let loader = this.$loading.show({
+      color: 'rgb(0, 195, 0)',
+      loader: 'dots',
+      opacity: 1
+    });
+
     // LIFF login check
     if (!this.$store.state.isAuthenticated) {
       console.log('ownedTask dispatch')
@@ -63,7 +71,9 @@ export default {
     this.$emit("setTitle", title)
     this.taskIcon = this.$store.state.taskIcon
     this.taskTitle = this.$store.state.taskTitle
-    this.queryInfo()
+    await this.queryInfo()
+
+    loader.hide()
   }
 }
 </script>
@@ -89,5 +99,6 @@ export default {
 .my-own-task {
   width: 90%;
   overflow: hidden;
+  margin: 10px 0;
 }
 </style>
