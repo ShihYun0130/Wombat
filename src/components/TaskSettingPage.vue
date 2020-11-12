@@ -7,7 +7,7 @@
       <div class="mt8"> 請選擇要上傳的任務類別：</div>
       <div class="justify-center-row">
         <div class="task-type-button" :class="{ isSelected: isImageLabel }" @click="selectImageLabel">圖片分類</div>
-        <div class="task-type-button" :class="{ isSelected: isTextLabel }" @click="selectTextLabel">文字分類</div>
+        <div class="disabled-button task-type-button" @click="selectTextLabel">文字分類</div>
       </div>
     </div>
     <div class="grey-text w100 text-left mt20">
@@ -117,10 +117,14 @@ export default {
       console.log('image label')
     },
     selectTextLabel() {
-      this.isTextLabel = true
-      this.isImageLabel = false
-      this.taskType = 'ner'
       console.log('text label')
+      this.isImageLabel = false
+      this.taskType = ''
+      this.$toasted.show('請先選擇其他選項，我們有緣就會相見！', {
+        position: 'bottom-center',
+        type: 'error',
+        duration: 1500
+      })
     },
     async convertFilesToString(file) {
       const toBase64 = file => new Promise((resolve, reject) => {
@@ -175,14 +179,13 @@ export default {
   },
   async mounted() {
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('taskSettingPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in taskSettingPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('taskSettingPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in taskSettingPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
@@ -210,6 +213,14 @@ export default {
   border-radius: 10px;
   color: white;
   box-shadow: 3px 3px 4px rgb(0, 0, 0, 0.16);
+}
+.disabled-button {
+  background:  rgb(190, 190, 190);
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 10px;
+  color: white;
+  box-shadow: 0px 0px 0px rgb(0, 0, 0, 0.16);
 }
 .isSelected {
   filter: brightness(80%);

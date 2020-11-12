@@ -170,38 +170,18 @@ export default {
         unlabeledDataList: unlabeledList
       })
 
-      // TODO: Call add task api
-
-      // const taskData = {
-      //   taskOwner: this.$store.state.taskOwner,
-      //   taskType: this.$store.state.taskType,
-      //   taskIcon: this.$store.state.taskIcon,
-      //   startDate: this.$store.state.taskStartDate,
-      //   endDate: this.$store.state.taskEndDate,
-      //   taskTitle: this.$store.state.taskTitle,
-      //   taskDescription: this.$store.state.taskDescription,
-      //   payRule: this.$store.state.taskPayRule,
-      //   leastPayLimitPage: this.$store.state.taskLeastPayLimitPage,
-      //   labeledDataList: this.$store.state.labeledStringList,
-      //   unlabeledDataList: this.$store.state.unLabeledStringList,
-      // }
-      
-      // const res = await axios.post('http://140.112.107.210:8000/task/addTask')
-      // console.log('res', res)
-
       this.$router.push('/classificationLabel')
     }
   },
   mounted() {
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('taskUploadPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in taskUploadPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('taskUploadPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in taskUploadPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
     const title = this.$route.meta.title
     this.$emit("setTitle", title)

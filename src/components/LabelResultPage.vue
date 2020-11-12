@@ -55,6 +55,7 @@ import imageLabelIcon from '../assets/icons/classification.png'
 import StarRating from 'vue-star-rating'
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
 import axios from "axios"
+import * as config from "../../config"
 
 
 export default {
@@ -83,7 +84,7 @@ export default {
 
       return {
           taskId: this.taskId,
-          userId: "userId01",
+          userId: this.userProfile.userId,
           taskType: this.taskType,
           transactionId: JSON.parse(localStorage.getItem('transactionId'))
       }
@@ -97,7 +98,7 @@ export default {
     async initialResult() {
       console.log(this.args);
       //get all entitys
-      const response = await axios.post('http://140.112.107.210:8000/accuracy', this.args);
+      const response = await axios.post(`${config.API_DOMAIN}/accuracy`, this.args);
       console.log(response);
       if(response.data.success){
         var result = response.data.data;
@@ -114,14 +115,13 @@ export default {
       opacity: 1
     });
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('LabelResultPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in LabelResultPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('LabelResultPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in LabelResultPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
     const title = this.$route.meta.title
     this.$emit('setTitle', title)

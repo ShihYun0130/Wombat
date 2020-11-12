@@ -10,6 +10,9 @@
       <div class="nav" @click="routeToTaskUpload">
         任務上傳
       </div>
+      <div class="nav" @click="routeToMyTask">
+        我的任務
+      </div>
       <img :src="cross" class="crossIcon" @click="closeNav" />
     </div>
   </div>
@@ -41,6 +44,10 @@ export default {
     },
     routeToTaskUpload() {
       this.$router.push('/Task-setting')
+      this.$emit("closeNav")
+    },
+    routeToMyTask() {
+      this.$router.push('/My-tasks')
       this.$emit("closeNav")
     }
   },
