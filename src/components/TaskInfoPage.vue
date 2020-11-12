@@ -75,13 +75,15 @@ export default {
       taskType: '',
       userProfile: {},
       payRule: 0,
+      targetClass:[],
     }
   },
   methods: {
     startTask(taskId, taskTitle, taskType) {
       var currentPage = 1;
-      var totalPage = 4;
+      var totalPage = 2;
       if(this.taskType == 'classification'){
+        totalPage = totalPage * this.targetClass.length;
         this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage } });
       }
       else{
@@ -107,6 +109,16 @@ export default {
         this.taskPay = "任務報酬: <span style=\"color:rgb(0, 195, 0)\">$2.5</span> / 每10頁</br>* <span style=\"color:rgb(255, 78, 78)\">最低</span>至少須完成10頁";
         this.payRule = result.payRule;
         console.log(this.taskDescription);
+      }
+
+      //get all class
+      const response2 = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
+      {
+          taskId: this.taskId,
+          userId: "",
+      });
+      if(response2.data.success){
+        this.targetClass = response2.data.data;
       }
     }
   },

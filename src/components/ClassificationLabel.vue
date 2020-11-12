@@ -44,6 +44,7 @@
 
 <script>
 import SelectableImageCard from './SelectableImageCard.vue'
+import {mapActions} from "vuex"
 import axios from "axios"
 import html2canvas from 'html2canvas'
 
@@ -102,6 +103,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["onSelectImageListChange"]),
+
     async onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
       console.log(this.args);
       const response = await axios.post('http://140.112.107.210:8000/saveAnswer',this.args);
@@ -118,6 +121,7 @@ export default {
       
 
       if(currentPage <= totalPage){
+        this.onSelectImageListChange([]);
         this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage}})
         this.reload();
       }
@@ -153,7 +157,8 @@ export default {
       this.labelList = response2.data.data.labelList;
       console.log(this.labelList);
       // console.log("labelId",this.labelId);
-      this.selectedClass = this.targetClass[this.currentPage];
+      var selectedClassIndex = (this.currentPage-1) % this.targetClass.length
+      this.selectedClass = this.targetClass[selectedClassIndex] ;
       loader.hide();
     },
     nextPage() {
@@ -215,14 +220,6 @@ export default {
       this.$emit("setTitle", customTitle);
       this.queryTaskInfo();
     }
-
-    // this.selectedClass = "狗";
-    // axios
-    //   .get('https://www.runoob.com/try/ajax/json_demo.json')
-    //   .then(response => (this.SelectedClass = response))
-    //   .catch(function (error) { 
-    //     console.log(error);
-    //   });
   }
 }
 
