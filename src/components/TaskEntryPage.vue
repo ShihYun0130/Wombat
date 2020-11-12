@@ -44,13 +44,13 @@ export default {
   },
   async mounted() {
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('taskInfoPage dispatch')
-    //   this.$router.push('/')
-    // } else {
-    //   console.log('profile in taskInfoPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('taskInfoPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in taskInfoPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
     let loader = this.$loading.show({
       color: 'rgb(0, 195, 0)',
       loader: 'dots',

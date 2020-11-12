@@ -36,7 +36,7 @@ export default {
     args: function() {
       // userId: this.userProfile.userId
       return {
-        userId: "userId01"
+        userId: this.userProfile.userId
       };
     }
   },
@@ -51,13 +51,13 @@ export default {
   },
   mounted() {
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('ownedTask dispatch')
-    //   this.$router.push('/')
-    // } else {
-    //   console.log('profile in ownedTask', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('ownedTask dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in ownedTask', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
     const title = this.$route.meta.title
     this.$emit("setTitle", title)

@@ -29,6 +29,8 @@
 
 <script>
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
+import axios from 'axios'
+import * as config from '../../config'
 // import liff from '@line/liff';
 
 export default {
@@ -75,27 +77,31 @@ export default {
       this.$router.push('/Tasks')
     }
   },
-  // async beforeCreate() {
-  //   let loader = this.$loading.show({
-  //     color: 'rgb(0, 195, 0)',
-  //     loader: 'dots',
-  //     opacity: 1
-  //   });
-  //   // LIFF login check
-  //   console.log('Hook: beforeCreate');
-  //   await liff.init({ liffId: '1655218168-VQrDOZBE' });
-  //   if (!liff.isLoggedIn()) {
-  //     console.log('has not logged in, store')
-  //     liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
-  //     console.log('redirected back')
-  //   }
-  //   const userProfile = await liff.getProfile()
-  //   this.userProfile = userProfile
-  //   this.$store.commit('setProfile', userProfile)
-  //   console.log('liff init beforeCreate', userProfile)
-  //   this.$emit("setProfilePic", userProfile.pictureUrl)
-  //   loader.hide();
-  // },
+  async beforeCreate() {
+    let loader = this.$loading.show({
+      color: 'rgb(0, 195, 0)',
+      loader: 'dots',
+      opacity: 1
+    });
+    // LIFF login check
+    console.log('Hook: beforeCreate');
+    await liff.init({ liffId: '1655218168-VQrDOZBE' });
+    if (!liff.isLoggedIn()) {
+      console.log('has not logged in, store')
+      liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
+      console.log('redirected back')
+    }
+    const userProfile = await liff.getProfile()
+    this.userProfile = userProfile
+    this.$store.commit('setProfile', userProfile)
+    console.log('liff init beforeCreate', userProfile)
+    this.$emit("setProfilePic", userProfile.pictureUrl)
+    const createUser = await axios.post(`${config.API_DOMAIN}/user`, {
+      userId: userProfile.userId,
+    });
+    console.log(createUser);
+    loader.hide();
+  },
   async mounted() {
     const title = ''
     // const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'

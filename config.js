@@ -1,3 +1,3 @@
 module.exports = {
-  API_DOMAIN: 'http://140.112.107.210:8000'
+  API_DOMAIN: 'https://platypus-backend.herokuapp.com'
 }

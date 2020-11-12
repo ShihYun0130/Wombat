@@ -136,6 +136,7 @@ export default {
       {
           taskId: this.taskId,
           userId: this.userProfile.userId,
+          // userId: 'testCreateUser',
       });
       // console.log(response.data.data);
       this.targetClass = response.data.data;
@@ -144,6 +145,7 @@ export default {
           taskId: this.taskId,
           taskType: this.taskType,
           userId: this.userProfile.userId,
+          // userId: 'testCreateUser',
           labelCount: this.numberOfImage,
           page: this.currentPage,
       });

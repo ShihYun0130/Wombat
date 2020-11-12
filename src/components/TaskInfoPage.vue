@@ -115,7 +115,7 @@ export default {
       const response2 = await axios.post(`${config.API_DOMAIN}/task/getQuestion`, 
       {
           taskId: this.taskId,
-          userId: "",
+          userId: this.userProfile.userId,
       });
       if(response2.data.success){
         this.targetClass = response2.data.data;
@@ -131,8 +131,8 @@ export default {
 
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
-    this.taskId=this.$route.query.id
-    this.taskType=this.$route.query.type;
+    this.taskId = this.$route.query.id
+    this.taskType = this.$route.query.type;
     console.log(this.taskId)
 
     console.log('mounted profile in task info', this.$store.state.userProfile)
