@@ -19,6 +19,7 @@
 import imageLabelIcon from '../assets/icons/imgLabel.png'
 import textLabelIcon from '../assets/icons/textLabelNoBg.png'
 import axios from "axios"
+import * as config from '../../config'
 
 export default {
   name: "TaskEntryPage",
@@ -35,26 +36,32 @@ export default {
       this.$router.push({ path: '/Task-info', query: { id , type}})
     },
     async queryTaskInfo(){
-      //get all entitys
-      const response = await axios.get('http://140.112.107.210:8000/tasks');
+      // get all entitys
+      const response = await axios.get(`${config.API_DOMAIN}/tasks`);
       console.log(response);
       this.allTaskList = response.data.data;
     }
   },
-  mounted() {
-    // // LIFF login check
+  async mounted() {
+    // LIFF login check
     // if (!this.$store.state.isAuthenticated) {
     //   console.log('taskInfoPage dispatch')
     //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
     // } else {
     //   console.log('profile in taskInfoPage', this.$store.state.userProfile)
     //   this.userProfile = this.$store.state.userProfile
     // }
+    let loader = this.$loading.show({
+      color: 'rgb(0, 195, 0)',
+      loader: 'dots',
+      opacity: 1
+    });
 
     const title = this.$route.meta.title;
     this.$emit("setTitle", title);
-    this.queryTaskInfo();
+    await this.queryTaskInfo();
+
+    loader.hide();
   }
 }
 </script>

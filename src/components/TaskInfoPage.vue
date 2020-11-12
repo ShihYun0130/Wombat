@@ -50,8 +50,8 @@ import Logo from '../assets/icons/logo_placeholder.png'
 import ques from '../assets/ques.png'
 import ans from '../assets/ans.png'
 import shareIcon from '../assets/icons/shareIcon.png'
-// import liff from '@line/liff';
 import axios from "axios"
+import * as config from "../../config"
 
 export default {
   name: "TaskInfoPage",
@@ -75,13 +75,15 @@ export default {
       taskType: '',
       userProfile: {},
       payRule: 0,
+      targetClass:[],
     }
   },
   methods: {
     startTask(taskId, taskTitle, taskType) {
       var currentPage = 1;
-      var totalPage = 1;
+      var totalPage = 2;
       if(this.taskType == 'classification'){
+        totalPage = totalPage * this.targetClass.length;
         this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage } });
       }
       else{
@@ -89,15 +91,15 @@ export default {
       }
     },
     async queryTaskInfo(){
-      const response = await axios.post('http://140.112.107.210:8000/task',{
+      const response = await axios.post(`${config.API_DOMAIN}/task`,{
         taskId: this.taskId,
-        userId: "userId01",
+        userId: this.userProfile.userId,
       });
       console.log(response);
       var result = response.data.data;
       if(response.data.success){
         this.taskDescription = result.description;
-        this.Logo = result.taskIcon;
+        this.Logo = result.taskIcon ? result.taskIcon : this.Logo;
         this.ques = result.examplePic[0];
         this.ans = result.examplePic[1];
         this.taskTitle = result.taskTitle;
@@ -108,9 +110,25 @@ export default {
         this.payRule = result.payRule;
         console.log(this.taskDescription);
       }
+
+      //get all class
+      const response2 = await axios.post(`${config.API_DOMAIN}/task/getQuestion`, 
+      {
+          taskId: this.taskId,
+          userId: "",
+      });
+      if(response2.data.success){
+        this.targetClass = response2.data.data;
+      }
     }
   },
   async mounted() {
+    let loader = this.$loading.show({
+      color: 'rgb(0, 195, 0)',
+      loader: 'dots',
+      opacity: 1
+    });
+
     const title = this.$route.meta.title
     this.$emit("setTitle", title)
     this.taskId=this.$route.query.id
@@ -119,25 +137,16 @@ export default {
 
     console.log('mounted profile in task info', this.$store.state.userProfile)
 
-    // // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('taskInfoPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in taskInfoPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
-
-    // if (!liff.isLoggedIn()) {
-    //   console.log('is not logged in in task-info')
-    //   this.$store.dispatch('liffLogin')
-    // } else if (!this.userProfile) {
-    //   await this.$store.dispatch('getProfile')
-    //   this.userProfile = this.$store.state.userProfile
-    //   console.log('is logged in in task info', this.$store.state.userProfile)
-    // }
-    this.queryTaskInfo();
+    // LIFF login check
+    if (!this.$store.state.isAuthenticated) {
+      console.log('taskInfoPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in taskInfoPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
+    await this.queryTaskInfo();
+    loader.hide();
   }
 }
 </script>

@@ -76,6 +76,11 @@ export default {
     }
   },
   // async beforeCreate() {
+  //   let loader = this.$loading.show({
+  //     color: 'rgb(0, 195, 0)',
+  //     loader: 'dots',
+  //     opacity: 1
+  //   });
   //   // LIFF login check
   //   console.log('Hook: beforeCreate');
   //   await liff.init({ liffId: '1655218168-VQrDOZBE' });
@@ -89,6 +94,7 @@ export default {
   //   this.$store.commit('setProfile', userProfile)
   //   console.log('liff init beforeCreate', userProfile)
   //   this.$emit("setProfilePic", userProfile.pictureUrl)
+  //   loader.hide();
   // },
   async mounted() {
     const title = ''

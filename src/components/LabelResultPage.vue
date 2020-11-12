@@ -55,6 +55,7 @@ import imageLabelIcon from '../assets/icons/classification.png'
 import StarRating from 'vue-star-rating'
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
 import axios from "axios"
+import * as config from "../../config"
 
 
 export default {
@@ -80,11 +81,12 @@ export default {
   computed: {
     args: function() {
                 // labelIdList: this.$store.state.answerIdList
+
       return {
           taskId: this.taskId,
-          userId: "userId01",
-          taskType: "ner",
-          labelIdList: this.$store.state.answerIdList
+          userId: this.userProfile.userId,
+          taskType: this.taskType,
+          transactionId: JSON.parse(localStorage.getItem('transactionId'))
       }
     }
   },
@@ -94,15 +96,9 @@ export default {
       this.$router.push('/Tasks')
     },
     async initialResult() {
-      // loading page
-      let loader = this.$loading.show({
-        // Optional parameters
-        canCancel: true,
-        onCancel: this.onCancel,
-      });
       console.log(this.args);
       //get all entitys
-      const response = await axios.post('http://140.112.107.210:8000/accuracy', this.args);
+      const response = await axios.post(`${config.API_DOMAIN}/accuracy`, this.args);
       console.log(response);
       if(response.data.success){
         var result = response.data.data;
@@ -110,19 +106,22 @@ export default {
         this.taskLevelPercentage = result.levelPercentage;
         this.expValue = result.taskExpValue;
       }
-      loader.hide();
     }
   },
-  mounted() {
+  async mounted() {
+    let loader = this.$loading.show({
+      color: 'rgb(0, 195, 0)',
+      loader: 'dots',
+      opacity: 1
+    });
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('LabelResultPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in LabelResultPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('LabelResultPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in LabelResultPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
     const title = this.$route.meta.title
     this.$emit('setTitle', title)
@@ -130,7 +129,9 @@ export default {
     this.taskId = this.$route.query.taskId;
     this.taskTitle = this.$route.query.taskTitle;
     console.log(this.taskType);
-    this.initialResult();
+    await this.initialResult();
+
+    loader.hide();
   }
 }
 </script>

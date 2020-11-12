@@ -51,12 +51,7 @@
 <script>
 import axios from "axios"
 import $ from 'jquery'
-import Vue from 'vue';
-import Loading from 'vue-loading-overlay';
-// Import stylesheet
-import 'vue-loading-overlay/dist/vue-loading.css';
-// Init plugin
-Vue.use(Loading);
+import * as config from "../../config"
 
 export default {
   name: 'NERTaskPage',
@@ -75,6 +70,7 @@ export default {
         taskType: "",
         taskId: "",
         taskTitle: "",
+        transactionId: "",
         selectedText: "",
         labelId:"",
         targetParagraph: "",
@@ -93,24 +89,42 @@ export default {
       for(var target of this.targetClass){
         ans[target] = this.selectedObject[target].selectedText;
       }
-      return {
-        taskType: "ner",
-        userId: "userId01",
-        taskId: "taskId02",
-        labelId: this.labelId,
-        NERObject: ans,
-      };
+      if(this.currentPage == 1){
+        return {
+          taskType: "ner",
+          userId: this.userProfile.userId,
+          taskId: "taskId02",
+          labelId: this.labelId,
+          NERObject: ans,
+        };
+      }
+      else{
+        return {
+          taskType: "ner",
+          userId: this.userProfile.userId,
+          taskId: "taskId02",
+          labelId: this.labelId,
+          NERObject: ans,
+          transactionId: JSON.parse(localStorage.getItem('transactionId')),
+        };
+      }
     }
   },
   methods: {
-      onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
+      async onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
         this.$store.commit('pushToAnswerIdList', this.labelId);
-        axios
-        .post('http://140.112.107.210:8000/saveAnswer', this.output)
-        .then(response => console.log(response))
-        .catch(function (error) { 
-          console.log(error);
-        });
+        const response = await axios.post(`${config.API_DOMAIN}/saveAnswer`, this.output)
+        if (response.data.success) 
+        {
+          console.log(response);
+          console.log('LocaltransactionId', JSON.parse(localStorage.getItem('transactionId')));
+          if(response.data.data && this.currentPage == 1) {
+            this.transactionId = response.data.data.transactionId;
+            await localStorage.setItem('transactionId', JSON.stringify(response.data.data.transactionId));
+            console.log('transactionId', JSON.parse(localStorage.getItem('transactionId')));
+          }
+        }
+
 
         if(currentPage <= totalPage){
           this.$router.push({ path: '/NERTaskPage', query: { taskType, taskId, taskTitle, currentPage, totalPage}})
@@ -199,20 +213,21 @@ export default {
           opacity: 1,
         });
         //get all entitys
-        const response = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
+        const response = await axios.post(`${config.API_DOMAIN}/task/getQuestion`, 
         {
             taskId: this.taskId,
-            userId: "userId01",
+            userId: this.userProfile.userId,
         });
         console.log(response.data.data);
         this.targetClass = response.data.data;
         //get paragraph
-        const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
+        const response2 = await axios.post(`${config.API_DOMAIN}/task/getLabel`, 
         {
             taskId: this.taskId,
             taskType: "ner",
-            userId: "userId01",
+            userId: this.userProfile.userId,
             labelCount: 1,
+            page: this.currentPage,
         });
         console.log(response2.data.data);
         this.labelId = response2.data.data.label.labelId;
@@ -233,16 +248,21 @@ export default {
         loader.hide();
       }
   },
-  mounted() {
+  async mounted() {
+    let loader = this.$loading.show({
+      color: 'rgb(0, 195, 0)',
+      loader: 'dots',
+      opacity: 1
+    });
+
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('NERPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in NERPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('NERPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in NERPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
     const title = this.$route.meta.title;
     this.taskTitle = this.$route.query.taskTitle;
@@ -252,7 +272,9 @@ export default {
     this.totalPage = parseInt(this.$route.query.totalPage);
     var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
     this.$emit("setTitle", customTitle);
-    this.queryTaskInfo();
+    await this.queryTaskInfo();
+
+    loader.hide();
   }
 }
 

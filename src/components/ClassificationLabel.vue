@@ -44,8 +44,10 @@
 
 <script>
 import SelectableImageCard from './SelectableImageCard.vue'
+import {mapActions} from "vuex"
 import axios from "axios"
 import html2canvas from 'html2canvas'
+import * as config from '../../config'
 
 export default {
   name: 'Classification',
@@ -66,6 +68,7 @@ export default {
         labelList:[],
         taskId:"",
         taskType:"",
+        numberOfImage: 4,
         isExample: false,
         userProfile: {}
     }
@@ -79,25 +82,47 @@ export default {
         output.push(item.labelId);
         this.$store.commit('pushToAnswerIdList', item.labelId);
       }
-      return {
-        userId: "",
-        classification: this.selectedClass,
-        labelIdList: output,
-        taskId: this.taskId
-      };
+      if(this.currentPage == 1){
+        return {
+          userId: "",
+          taskType: this.taskType,
+          classification: this.selectedClass,
+          labelIdList: output,
+          taskId: this.taskId
+        };
+      }
+      else{
+          return {
+          userId: "",
+          taskType: this.taskType,
+          classification: this.selectedClass,
+          labelIdList: output,
+          taskId: this.taskId,
+          transactionId: JSON.parse(localStorage.getItem('transactionId')),
+        };
+      }
     }
   },
   methods: {
-    onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
+    ...mapActions(["onSelectImageListChange"]),
+
+    async onSubmitAns(taskType, taskId, taskTitle, currentPage, totalPage){
       console.log(this.args);
-      axios
-      .post('http://140.112.107.210:8000/saveAnswer',this.args)
-      .then(response => console.log(response))
-      .catch(function (error) { 
-        console.log(error);
-      });
+      const response = await axios.post(`${config.API_DOMAIN}/saveAnswer`,this.args);
+      if (response.data.success) 
+      {
+        console.log(response);
+        console.log('LocaltransactionId', JSON.parse(localStorage.getItem('transactionId')));
+        if(response.data.data && this.currentPage == 1) {
+          this.transactionId = response.data.data.transactionId;
+          await localStorage.setItem('transactionId', JSON.stringify(response.data.data.transactionId));
+          console.log('transactionId', JSON.parse(localStorage.getItem('transactionId')));
+        }
+      }
+      
 
       if(currentPage <= totalPage){
+        this.onSelectImageListChange([]);
         this.$router.push({ path: '/classificationLabel', query: { taskType, taskId, taskTitle, currentPage, totalPage}})
         this.reload();
       }
@@ -106,34 +131,29 @@ export default {
       }
     },
     async queryTaskInfo(){
-      // loading page
-      let loader = this.$loading.show({
-        // Optional parameters
-        canCancel: true,
-        onCancel: this.onCancel,
-      });
       //get all class
-      const response = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
+      const response = await axios.post(`${config.API_DOMAIN}/task/getQuestion`, 
       {
           taskId: this.taskId,
-          userId: "userId01",
+          userId: this.userProfile.userId,
       });
       // console.log(response.data.data);
       this.targetClass = response.data.data;
-      const response2 = await axios.post('http://140.112.107.210:8000/task/getLabel', 
+      const response2 = await axios.post(`${config.API_DOMAIN}/task/getLabel`, 
       {
           taskId: this.taskId,
-          taskType: "classification",
-          userId: "userId01",
-          labelCount: 2,
+          taskType: this.taskType,
+          userId: this.userProfile.userId,
+          labelCount: this.numberOfImage,
+          page: this.currentPage,
       });
       // console.log(response2.data.data);
       // this.labelId = response2.data.data.label.labelId;
       this.labelList = response2.data.data.labelList;
       console.log(this.labelList);
       // console.log("labelId",this.labelId);
-      this.selectedClass = this.targetClass[this.currentPage];
-      loader.hide();
+      var selectedClassIndex = (this.currentPage-1) % this.targetClass.length
+      this.selectedClass = this.targetClass[selectedClassIndex] ;
     },
     nextPage() {
       html2canvas(document.querySelector("#captureRange")).then(canvas => {
@@ -150,18 +170,17 @@ export default {
       vm.prevRoute = from.name
     })
   },
-  mounted() {
+  async mounted() {
     console.log('prevRoute', this.prevRoute);
 
     // LIFF login check
-    // if (!this.$store.state.isAuthenticated) {
-    //   console.log('classLabelPage dispatch')
-    //   this.$router.push('/')
-    //   // await this.$store.dispatch('getProfile')
-    // } else {
-    //   console.log('profile in classLabelPage', this.$store.state.userProfile)
-    //   this.userProfile = this.$store.state.userProfile
-    // }
+    if (!this.$store.state.isAuthenticated) {
+      console.log('classLabelPage dispatch')
+      this.$router.push('/')
+    } else {
+      console.log('profile in classLabelPage', this.$store.state.userProfile)
+      this.userProfile = this.$store.state.userProfile
+    }
 
     if (this.prevRoute === "TaskUploadPage") {
       this.isExample = true
@@ -184,6 +203,11 @@ export default {
         });
       })
     } else {
+      let loader = this.$loading.show({
+        color: 'rgb(0, 195, 0)',
+        loader: 'dots',
+        opacity: 1
+      });
       const title = this.$route.meta.title;
       this.taskType = this.$route.query.taskType;
       this.taskTitle = this.$route.query.taskTitle;
@@ -192,16 +216,9 @@ export default {
       this.totalPage = parseInt(this.$route.query.totalPage);
       var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
       this.$emit("setTitle", customTitle);
-      this.queryTaskInfo();
+      await this.queryTaskInfo();
+      loader.hide();
     }
-
-    // this.selectedClass = "狗";
-    // axios
-    //   .get('https://www.runoob.com/try/ajax/json_demo.json')
-    //   .then(response => (this.SelectedClass = response))
-    //   .catch(function (error) { 
-    //     console.log(error);
-    //   });
   }
 }
 
