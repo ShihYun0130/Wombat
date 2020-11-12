@@ -130,12 +130,6 @@ export default {
       }
     },
     async queryTaskInfo(){
-      // loading page
-      let loader = this.$loading.show({
-        // Optional parameters
-        canCancel: true,
-        onCancel: this.onCancel,
-      });
       //get all class
       const response = await axios.post('http://140.112.107.210:8000/task/getQuestion', 
       {
@@ -159,7 +153,6 @@ export default {
       // console.log("labelId",this.labelId);
       var selectedClassIndex = (this.currentPage-1) % this.targetClass.length
       this.selectedClass = this.targetClass[selectedClassIndex] ;
-      loader.hide();
     },
     nextPage() {
       html2canvas(document.querySelector("#captureRange")).then(canvas => {
@@ -176,7 +169,7 @@ export default {
       vm.prevRoute = from.name
     })
   },
-  mounted() {
+  async mounted() {
     console.log('prevRoute', this.prevRoute);
 
     // LIFF login check
@@ -210,6 +203,11 @@ export default {
         });
       })
     } else {
+      let loader = this.$loading.show({
+        color: 'rgb(0, 195, 0)',
+        loader: 'dots',
+        opacity: 1
+      });
       const title = this.$route.meta.title;
       this.taskType = this.$route.query.taskType;
       this.taskTitle = this.$route.query.taskTitle;
@@ -218,7 +216,8 @@ export default {
       this.totalPage = parseInt(this.$route.query.totalPage);
       var customTitle = title+" <span style=\"color:rgb(0, 195, 0)\">"+this.currentPage+"</span> <span style=\"color:rgb(156, 156, 156)\">/"+this.totalPage+"</span>";
       this.$emit("setTitle", customTitle);
-      this.queryTaskInfo();
+      await this.queryTaskInfo();
+      loader.hide();
     }
   }
 }

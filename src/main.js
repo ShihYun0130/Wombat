@@ -10,6 +10,10 @@ import Vuex from 'vuex'
 import store from './store'
 import SweetAlertIcons from 'vue-sweetalert-icons';
 import Toasted from 'vue-toasted';
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+
+Vue.use(Loading);
 
 Vue.use(Toasted, {
   position: 'bottom-center',

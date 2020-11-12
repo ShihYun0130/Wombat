@@ -139,12 +139,26 @@ export default {
     },
     async sendTask() {
       const response = await axios.post('http://140.112.107.210:8000/task/addTask', this.getTaskInfo);
-      console.log(response);
+      console.log('send Task response', response);
+      return response.data.success
     },
-    nextPage() {
+    async nextPage() {
+      let loader = this.$loading.show({
+        color: 'rgb(0, 195, 0)',
+        loader: 'dots',
+        opacity: 1
+      });
       console.log(this.getTaskInfo);
-      this.sendTask();
-      this.$router.push('/Success');
+      const isSendTask = await this.sendTask();
+      console.log('isSendTask', isSendTask)
+      loader.hide();
+      if (isSendTask) {
+        this.$router.push('/Success');
+      }
+      else {
+        this.$router.push('/Failed');
+      }
+      
     }
   },
   mounted() {
