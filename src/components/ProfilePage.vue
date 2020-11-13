@@ -88,11 +88,11 @@ export default {
       }
       this.$router.push('/Tasks')
     },
-    async queryInfo(){
-      console.log(this.userProfile);
+    async queryInfo(userProfile){
+      console.log(userProfile);
       const response = await axios.post(`${config.API_DOMAIN}/level`, 
       {
-          userId: this.userProfile.userId,
+          userId: userProfile.userId,
       });
       const result = response.data
       console.log("result =", result);
@@ -130,6 +130,7 @@ export default {
       userId: userProfile.userId,
     });
     console.log(createUser);
+    await this.queryInfo(userProfile);
     loader.hide();
   },
   async mounted() {
@@ -137,7 +138,6 @@ export default {
     // const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
     this.$emit("setTitle", title)
     // this.$emit("setProfilePic", this.userProfile.pictureUrl)
-    this.queryInfo();
   }
 }
 </script>

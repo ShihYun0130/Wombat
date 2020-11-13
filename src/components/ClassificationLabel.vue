@@ -154,7 +154,7 @@ export default {
       this.labelList = response2.data.data.labelList;
       console.log(this.labelList);
       // console.log("labelId",this.labelId);
-      var selectedClassIndex = (this.currentPage-1) % this.targetClass.length
+      var selectedClassIndex = (this.currentPage-1) % 2
       this.selectedClass = this.targetClass[selectedClassIndex] ;
     },
     nextPage() {
