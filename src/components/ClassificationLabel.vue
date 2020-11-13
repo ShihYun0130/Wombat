@@ -84,7 +84,7 @@ export default {
       }
       if(this.currentPage == 1){
         return {
-          userId: "",
+          userId: this.userProfile.userId,
           taskType: this.taskType,
           classification: this.selectedClass,
           labelIdList: output,
@@ -93,7 +93,7 @@ export default {
       }
       else{
           return {
-          userId: "",
+          userId: this.userProfile.userId,
           taskType: this.taskType,
           classification: this.selectedClass,
           labelIdList: output,

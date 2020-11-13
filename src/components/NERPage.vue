@@ -141,7 +141,13 @@ export default {
       getSelectedText() { 
         var target = this.targetClass[this.focusClass];
         if(this.selectedObject[target].selectedText != ""){
-          alert("一個實體只能對應到一段文字，如果要變更請先刪除原圈選文字後再繼續");
+          this.$toasted.show('一個實體只能對應到一段文字，如果要變更請先刪除原圈選文字後再繼續', 
+          {
+            position: 'bottom-center',
+            type: 'error',
+            duration: 1500
+          })
+          // alert("一個實體只能對應到一段文字，如果要變更請先刪除原圈選文字後再繼續");
           return false;
         }
         else if (this.focusClass >= this.targetClass.length){
@@ -222,10 +228,15 @@ export default {
             labelCount: 1,
             page: this.currentPage,
         });
-        console.log(response2.data.data);
-        this.labelId = response2.data.data.label.labelId;
-        this.targetParagraph = response2.data.data.label.targetParagraph;
-        console.log("labelId",this.labelId);
+        // console.log(response2.data.data);
+        if(response2.data.success){
+          var result2 = response2.data.data.label[0];
+          console.log("result2: ",result2);
+          this.labelId = result2.labelId;
+          this.targetParagraph = result2.targetParagraph;
+          console.log("labelId",result2.labelId);
+          console.log("targetParagraph",this.targetParagraph);
+        }
         document.addEventListener('selectionchange',() => {
             this.currentSelectedText = window.getSelection().toString();
         });
@@ -253,9 +264,9 @@ export default {
       this.$router.push('/')
     } else {
       console.log('profile in NERPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
+    this.userProfile = this.$store.state.userProfile
     }
-
+    
     const title = this.$route.meta.title;
     this.taskTitle = this.$route.query.taskTitle;
     this.taskId = this.$route.query.taskId;

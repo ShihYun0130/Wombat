@@ -67,7 +67,7 @@ export default {
       endDate: "",
       taskPay: "任務報酬: <span style=\"color:rgb(0, 195, 0)\">$2.5</span> / 每10頁</br>* <span style=\"color:rgb(255, 78, 78)\">最低</span>至少須完成10頁",
       taskDescription: "",
-      taskExQuestion: "請問下列圖片哪些屬於<span style=\"color:rgb(0, 195, 0)\">數字2</span>?",
+      taskExQuestion: "範例問題",
       taskExQuesPic: '',
       taskExAnswerHint: "您應該點擊選擇:",
       taskExAnsPic: '',
