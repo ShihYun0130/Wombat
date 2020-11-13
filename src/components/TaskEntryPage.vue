@@ -8,7 +8,7 @@
         <div v-else class="task-list-text-icon"></div>
         <div class="task-list-right">
           <div class="grey-text f16">{{task.taskTitle}}</div>
-          <div class="white-grey-text f14">{{task.taskOwner}}</div>
+          <div class="white-grey-text f14">{{task.taskOwnerName}}</div>
         </div>
       </div>
     </div>

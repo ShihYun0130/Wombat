@@ -20,7 +20,7 @@
       <div v-else class="grey-text f20 task-level">未解鎖</div>
     </div>
 
-    <div class="go-to-task-button" @click="goToTaskPage">
+    <div class="go-to-task-button" @click="goToTaskPage()">
       <img :src="dashboardIcon" />
       <div class="dashBoard-text">前往任務看板</div>
     </div>
@@ -104,6 +104,8 @@ export default {
       console.log('redirected back')
     }
     // const userProfile = {"userId":"U4b95521900347bfce99dda2206a20c74","displayName":"陳漢威 Frank","pictureUrl":"https://profile.line-scdn.net/0htjZexfPKK0VnHAFFz8FUEltZJSgQMi0NHy1icBcYciFJKz4TCCo2c0cadCJOe2RGUn4wJkVMIXEZ"}
+
+    const userProfile = await liff.getProfile()
     this.userProfile = userProfile
     this.$store.commit('setProfile', userProfile)
     console.log('liff init beforeCreate', userProfile)
