@@ -22,7 +22,7 @@
     <div v-html="targetHtml" class='selectableText'></div>
     <div class="row-display">
       <div v-for="(item, index) in targetClass" :key="index">
-        <div class="focusButton" :class="[selectedObject[item].color, {focus: focusClass == index && selectedObject[item].isEdit}]" style="margin-right: 10px;" @click="onClick(index)">{{item}}</div>
+        <div class="focusButton" :class="[selectedObject[item].color, {focus: focusClass == index && selectedObject[item].isEdit}]" style="margin-right: 5px;" @click="onClick(index)">{{item}}</div>
       </div>
     </div>
     <div style="width: 100%;">
@@ -75,7 +75,7 @@ export default {
         labelId:"",
         targetParagraph: "",
         targetHtml: "",
-        colorList: ["#66C7F4", "#527cbb", "#345995", "#98A886", "#023C40", "#042A2B"],
+        colorList: ["#66C7F4", "#527cbb", "#345995", "#98A886", "#77bd5c", "#00a349"],
         colorClassList: ["col1", "col2", "col3", "col4", "col5", "col6"],
         userProfile: {}
     }
@@ -359,7 +359,7 @@ export default {
   .focusButton{
     background-color: rgb(0, 195, 0);
     font-weight: bold;
-    font-size: 20px;
+    font-size: 16px;
     color: white;
     padding: 5px 10px;
     border-radius: 6px;
@@ -368,7 +368,7 @@ export default {
   }
   .focus{
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.589),0 5px 6px 0 rgba(0, 0, 0, 0.137);
-    filter: brightness(110%);
+    filter: brightness(120%);
     transition: 1s;
   }
   .displayBlock {
@@ -381,6 +381,8 @@ export default {
   .row-display{
     display: flex;
     align-items: center;
+    position: fixed;
+    bottom: 90px;
   }
   .blue{
     background-color: rgb(185, 65, 255);
@@ -404,9 +406,9 @@ export default {
     background-color: #98A886;
   }
   .col5{
-    background-color: #023C40;
+    background-color: #77bd5c;
   }
   .col6{
-    background-color: #042A2B;
+    background-color: #00a349;
   }
 </style>
