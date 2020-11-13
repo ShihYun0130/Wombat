@@ -40,20 +40,20 @@ export default {
   data() {
     return {
       dashboardIcon,
-      totalTaskAmount: 3,
+      totalTaskAmount: 2,
       score: 4.2,
       taskList: [{
         icon: require('../assets/icons/classification.png'),
         type: "分類型",
         taskType: "classification",
-        level: 2,
-        levelPercentage: 30
+        level: 1,
+        levelPercentage: 0
       }, {
         icon: require('../assets/icons/textLabel.png'),
         type: "文字標註",
         taskType: "ner",
         level: 1,
-        levelPercentage: 70
+        levelPercentage: 0
       }, {
         icon: require('../assets/icons/lock.png'),
         type: "圖文標註",
@@ -87,6 +87,22 @@ export default {
         return
       }
       this.$router.push('/Tasks')
+    },
+    async queryInfo(){
+      console.log(this.userProfile);
+      const response = await axios.post(`${config.API_DOMAIN}/level`, 
+      {
+          userId: this.userProfile.userId,
+      });
+      const result = response.data
+      console.log("result =", result);
+      if(result.success){
+        console.log(result.data);
+        for(var i = 0; i < result.data.length; i++){
+          this.taskList[i].level = result.data[i].level+1
+          this.taskList[i].levelPercentage = result.data[i].levelPercentage
+        }
+      }
     }
   },
   async beforeCreate() {
@@ -121,6 +137,7 @@ export default {
     // const imgPath = 'https://images2.gamme.com.tw/news2/2012/31/97/p5_WnaadlKSW.jpg'
     this.$emit("setTitle", title)
     // this.$emit("setProfilePic", this.userProfile.pictureUrl)
+    this.queryInfo();
   }
 }
 </script>
