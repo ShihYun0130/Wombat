@@ -8,7 +8,7 @@
         <div v-else class="task-list-text-icon"></div>
         <div class="task-list-right">
           <div class="grey-text f16">{{task.taskTitle}}</div>
-          <div class="white-grey-text f14">{{task.taskOwner}}</div>
+          <div class="white-grey-text f14">{{task.taskOwnerName}}</div>
         </div>
       </div>
     </div>
@@ -37,6 +37,13 @@ export default {
     },
     async queryTaskInfo(){
       // get all entitys
+      const type = this.$route.query.taskType
+      if(type){
+        const response = await axios.post(`${config.API_DOMAIN}/taskType`, {taskType: type});
+        console.log(response);
+        this.allTaskList = response.data.data;
+        return;
+      }
       const response = await axios.get(`${config.API_DOMAIN}/tasks`);
       console.log(response);
       this.allTaskList = response.data.data;
