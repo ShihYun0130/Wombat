@@ -41,7 +41,6 @@ export default {
       isOpen: false,
       profileImgPath: '',
       isRouterAlive: true,
-      userProfile: {}
     }
   },
   methods: {

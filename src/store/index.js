@@ -90,6 +90,8 @@ export default new Vuex.Store({
     setProfile(state, userProfile) {
       console.log('set profile', userProfile)
       state.userProfile = userProfile
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userProfile', JSON.stringify(userProfile));
       state.isAuthenticated = true
       if (!userProfile) {
         state.isAuthenticated = false

@@ -31,7 +31,7 @@
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
 import axios from 'axios'
 import * as config from '../../config'
-// import liff from '@line/liff';
+import liff from '@line/liff';
 
 export default {
   name: "ProfilePage",

@@ -176,12 +176,12 @@ export default {
     console.log('prevRoute', this.prevRoute);
 
     // LIFF login check
-    if (!this.$store.state.isAuthenticated) {
-      console.log('classLabelPage dispatch')
+    if (!this.$store.state.isAuthenticated && !localStorage.getItem('isAuthenticated') == 'true') {
+      console.log('taskSettingPage dispatch')
       this.$router.push('/')
     } else {
-      console.log('profile in classLabelPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
+      console.log('profile in taskSettingPage', JSON.parse(localStorage.getItem('userProfile')))
+      this.userProfile = JSON.parse(localStorage.getItem('userProfile'))
     }
 
     if (this.prevRoute === "TaskUploadPage") {
