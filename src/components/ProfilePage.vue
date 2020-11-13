@@ -31,7 +31,7 @@
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
 import axios from 'axios'
 import * as config from '../../config'
-import liff from '@line/liff';
+// import liff from '@line/liff';
 
 export default {
   name: "ProfilePage",
@@ -104,6 +104,7 @@ export default {
       console.log('redirected back')
     }
     // const userProfile = {"userId":"U4b95521900347bfce99dda2206a20c74","displayName":"陳漢威 Frank","pictureUrl":"https://profile.line-scdn.net/0htjZexfPKK0VnHAFFz8FUEltZJSgQMi0NHy1icBcYciFJKz4TCCo2c0cadCJOe2RGUn4wJkVMIXEZ"}
+
     const userProfile = await liff.getProfile()
     this.userProfile = userProfile
     this.$store.commit('setProfile', userProfile)
