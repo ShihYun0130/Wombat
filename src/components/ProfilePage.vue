@@ -8,7 +8,7 @@
 
     <div class="horizontal-line"></div>
 
-    <div v-for="task in taskList" :key="task.type" class="task-container">
+    <div v-for="task in taskList" :key="task.type" class="task-container" @click="goToTaskPage(task.taskType)">
       <img class="task-icon" :src="task.icon" />
       <div class="task-middle">
         <div class="grey-text f20">{{task.type}}</div>
@@ -17,7 +17,7 @@
         </div>
       </div>
       <div v-if="task.level > 0" class="green-text f20 task-level">LV.{{task.level}}</div>
-      <div v-else class="grey-text f20 task-level">未標註</div>
+      <div v-else class="grey-text f20 task-level">未解鎖</div>
     </div>
 
     <div class="go-to-task-button" @click="goToTaskPage">
@@ -31,7 +31,7 @@
 import dashboardIcon from '../assets/icons/dashboardIcon.png'
 import axios from 'axios'
 import * as config from '../../config'
-import liff from '@line/liff';
+// import liff from '@line/liff';
 
 export default {
   name: "ProfilePage",
@@ -45,26 +45,31 @@ export default {
       taskList: [{
         icon: require('../assets/icons/classification.png'),
         type: "分類型",
+        taskType: "classification",
         level: 2,
         levelPercentage: 30
       }, {
         icon: require('../assets/icons/textLabel.png'),
         type: "文字標註",
+        taskType: "ner",
         level: 1,
         levelPercentage: 70
       }, {
         icon: require('../assets/icons/lock.png'),
         type: "圖文標註",
+        taskType: "lock",
         level: 0,
         levelPercentage: 0
       }, {
         icon: require('../assets/icons/lock.png'),
         type: "問答標註",
+        taskType: "lock",
         level: 0,
         levelPercentage: 0
       }, {
         icon: require('../assets/icons/lock.png'),
         type: "輪廓標註",
+        taskType: "lock",
         level: 0,
         levelPercentage: 0
       }],
@@ -72,8 +77,15 @@ export default {
     }
   },
   methods: {
-    goToTaskPage() {
-      console.log('gototask')
+    goToTaskPage(taskType) {
+      console.log("taskType",taskType);
+      if(taskType == "lock"){
+        return
+      }
+      if(taskType){
+        this.$router.push({path: '/Tasks', query: { taskType}})
+        return
+      }
       this.$router.push('/Tasks')
     }
   },
@@ -91,7 +103,7 @@ export default {
       liff.login({ redirectUri: "https://line-label.herokuapp.com/" })
       console.log('redirected back')
     }
-    const userProfile = await liff.getProfile()
+    // const userProfile = {"userId":"U4b95521900347bfce99dda2206a20c74","displayName":"陳漢威 Frank","pictureUrl":"https://profile.line-scdn.net/0htjZexfPKK0VnHAFFz8FUEltZJSgQMi0NHy1icBcYciFJKz4TCCo2c0cadCJOe2RGUn4wJkVMIXEZ"}
     this.userProfile = userProfile
     this.$store.commit('setProfile', userProfile)
     console.log('liff init beforeCreate', userProfile)
