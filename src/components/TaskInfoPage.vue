@@ -138,13 +138,14 @@ export default {
     console.log('mounted profile in task info', this.$store.state.userProfile)
 
     // LIFF login check
-    if (!this.$store.state.isAuthenticated) {
-      console.log('taskInfoPage dispatch')
+    if (!this.$store.state.isAuthenticated && !localStorage.getItem('isAuthenticated') == 'true') {
+      console.log('taskSettingPage dispatch')
       this.$router.push('/')
     } else {
-      console.log('profile in taskInfoPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
+      console.log('profile in taskSettingPage', JSON.parse(localStorage.getItem('userProfile')))
+      this.userProfile = JSON.parse(localStorage.getItem('userProfile'))
     }
+
     await this.queryTaskInfo();
     loader.hide();
   }

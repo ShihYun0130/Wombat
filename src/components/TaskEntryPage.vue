@@ -1,6 +1,6 @@
 <template>
   <div id="taskEntryPage">
-    <div class="task-page-info"> 請從下方選擇任務點擊進入 </div>
+    <div class="task-page-info"> 請從下方選擇任務 </div>
     <div class="horizontal-line"></div>
     <div class="task-list-container">
       <div v-for="task in allTaskList" :key="task.id" class="task-item" @click="goToDetailPage(task.taskId, task.taskType)">
@@ -44,13 +44,14 @@ export default {
   },
   async mounted() {
     // LIFF login check
-    if (!this.$store.state.isAuthenticated) {
-      console.log('taskInfoPage dispatch')
+    if (!this.$store.state.isAuthenticated && !localStorage.getItem('isAuthenticated') == 'true') {
+      console.log('taskSettingPage dispatch')
       this.$router.push('/')
     } else {
-      console.log('profile in taskInfoPage', this.$store.state.userProfile)
-      this.userProfile = this.$store.state.userProfile
+      console.log('profile in taskSettingPage', JSON.parse(localStorage.getItem('userProfile')))
+      this.userProfile = JSON.parse(localStorage.getItem('userProfile'))
     }
+
     let loader = this.$loading.show({
       color: 'rgb(0, 195, 0)',
       loader: 'dots',
@@ -83,7 +84,8 @@ export default {
   font-weight: bold;
   color: rgb(129, 129, 129);
 
-  margin-top: 22px;
+  margin-top: 40px;
+  /* margin-bottom: 13px; */
 }
 
 .horizontal-line {
@@ -108,7 +110,8 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
+  width: 70%;
+  margin-top: 5px;
 }
 
 .f16 {
@@ -130,7 +133,7 @@ export default {
   align-items: center;
 
   width: 100%;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .task-list-right {

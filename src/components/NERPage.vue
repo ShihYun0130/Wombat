@@ -259,12 +259,12 @@ export default {
     });
 
     // LIFF login check
-    if (!this.$store.state.isAuthenticated) {
-      console.log('NERPage dispatch')
+    if (!this.$store.state.isAuthenticated && !localStorage.getItem('isAuthenticated') == 'true') {
+      console.log('taskSettingPage dispatch')
       this.$router.push('/')
     } else {
-      console.log('profile in NERPage', this.$store.state.userProfile)
-    this.userProfile = this.$store.state.userProfile
+      console.log('profile in taskSettingPage', JSON.parse(localStorage.getItem('userProfile')))
+      this.userProfile = JSON.parse(localStorage.getItem('userProfile'))
     }
     
     const title = this.$route.meta.title;
