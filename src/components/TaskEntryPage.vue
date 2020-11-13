@@ -37,6 +37,13 @@ export default {
     },
     async queryTaskInfo(){
       // get all entitys
+      const type = this.$route.query.taskType
+      if(type){
+        const response = await axios.post(`${config.API_DOMAIN}/taskType`, {taskType: type});
+        console.log(response);
+        this.allTaskList = response.data.data;
+        return;
+      }
       const response = await axios.get(`${config.API_DOMAIN}/tasks`);
       console.log(response);
       this.allTaskList = response.data.data;
