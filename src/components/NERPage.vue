@@ -11,12 +11,12 @@
       </span>
     </div>
 
-    <div class="p2">
+    <!-- <div class="p2">
         請標出下列文字分別屬於
         <span v-for="(item, index) in targetClass" :key="index" :style="{color:colorList[index]}" style="margin-right: 10px;">{{item}}</span>
         <span>的類別</span>
-    </div>
-    <div class="bold-text f18"> 你所選擇的 <span :style="{color: colorList[focusClass]}">{{targetClass[focusClass]}}</span> 為:</div>
+    </div> -->
+    <div class="bold-text f18 m20"> 你所選擇的 <span :style="{color: colorList[focusClass]}">{{targetClass[focusClass]}}</span> 為:</div>
     <div class="displayBlock" style="height: 40px" v-if="!currentSelectedText"></div>
     <div class="displayBlock" :style="{color: colorList[focusClass], border: '3px solid '+ colorList[focusClass]}" v-if="currentSelectedText">{{currentSelectedText}}</div>
     <div v-html="targetHtml" class='selectableText'></div>
@@ -332,7 +332,8 @@ export default {
   .button-right {
     display: flex;
     justify-content: flex-end;
-    margin-top: 60px;
+    margin-top: 20px;
+    margin-bottom: 120px;
   }
   .selectableText {
     font-size: 20px;
@@ -382,7 +383,11 @@ export default {
     display: flex;
     align-items: center;
     position: fixed;
-    bottom: 90px;
+    bottom: 30px;
+    width: 90%;
+  }
+  .m20{
+    margin-top: 20px;
   }
   .blue{
     background-color: rgb(185, 65, 255);
