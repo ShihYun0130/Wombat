@@ -31,10 +31,15 @@
       </div>
       <div class="align-start-column m16">
         <div class="dark-grey bold-text f20">標註範例</div>
-        <div class="bold-text white-grey-text f16 mt8" v-html="taskExQuestion"></div>
-        <img :src="ques" class="w100" />
-        <div class="bold-text white-grey-text f16 mt8" v-html="taskExAnswerHint"></div>
-        <img :src="ans" class="w100" />
+        <div v-if="this.taskType == 'classification'">
+          <div class="bold-text white-grey-text f16 mt8" v-html="taskExQuestion"></div>
+          <img :src="ques" class="w100" />
+          <div class="bold-text white-grey-text f16 mt8" v-html="taskExAnswerHint"></div>
+          <img :src="ans" class="w100" />
+        </div>
+        <div v-else>
+          <iframe width="90%" src="https://www.youtube.com/embed/120lJsqHSJI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
       </div>
     </div>
 
